@@ -33,17 +33,17 @@ describe("colossus logo", () => {
       const text = variant.join("\n")
       expect(text).not.toContain("🬺🬏")
       expect(text).not.toContain("🬁🬬")
-      expect(/^[█~ ]+$/.test(text.replace(/\n/g, ""))).toBe(true)
+      expect(/^[█╗╝╚═║╔ ]+$/.test(text.replace(/\n/g, ""))).toBe(true)
     }
   })
 
-  test("renders the Colossus wordmark with a shadow row in the TUI variant", () => {
-    const modern = tui({ KILO_UNICODE_LOGO: "1" }, "linux")
-    expect(modern).toHaveLength(6)
-    expect(modern.at(-1)).toContain("~")
-    // plain drops the shadow, so nothing prints a stray tilde outside the TUI
-    expect(plain({}, "win32")).toHaveLength(5)
-    expect(plain({}, "win32").join("")).not.toContain("~")
+  test("renders the Colossus wordmark in ANSI Shadow", () => {
+    for (const variant of [tui({ KILO_UNICODE_LOGO: "1" }, "linux"), plain({}, "win32")]) {
+      expect(variant).toHaveLength(6)
+      // the bevel glyphs are part of the letterform, drawn darker by the renderers
+      expect(variant.join("")).toContain("╗")
+      expect(variant.join("")).not.toContain("~")
+    }
   })
 
   test("formats child session exit logo", () => {

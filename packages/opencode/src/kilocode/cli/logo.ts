@@ -4,35 +4,34 @@ const no = new Set(["0", "false", "no", "off"])
 
 // kilocode_change - Colossus wordmark.
 //
-// `~` is a shadow marker, not a literal tilde: both the TUI logo component and
-// the CLI's UI.logo() translate it to a dimmed ▀, which is what gives the
-// wordmark its drop shadow. `_` and `^` are the other two markers.
+// ANSI Shadow letterforms: the ╗╝╚═║╔ bevels are part of the glyph, drawn a
+// step darker than the ██ faces so the word reads as extruded. That replaces
+// the old `~` shadow-row trick, though the `_`/`^`/`~` markers stay supported
+// by both renderers for any future art.
 //
-// The letterforms use only █ and ▀ (CP437-compatible), so unlike the KILOCODE
-// art this needs no reduced fallback — the sextant glyphs old Windows console,
-// ConEmu, and ANSICON cannot render are gone. supports() still drives the exit
-// banner and stays exported for callers that check terminal capability.
+// Box-drawing and block glyphs are CP437-safe, so unlike the KILOCODE art this
+// needs no reduced fallback — the sextants old Windows console, ConEmu, and
+// ANSICON cannot render are gone. supports() still drives the exit banner.
 const WORDMARK = [
-  ` ████   ████  ██      ████   █████  █████ ██  ██  █████`,
-  `██     ██  ██ ██     ██  ██ ██     ██     ██  ██ ██`,
-  `██     ██  ██ ██     ██  ██  ████   ████  ██  ██  ████`,
-  `██     ██  ██ ██     ██  ██     ██     ██ ██  ██     ██`,
-  ` ████   ████  ██████  ████  █████  █████   ████  █████`,
+  ` ██████╗  ██████╗ ██╗       ██████╗ ███████╗ ███████╗ ██╗   ██╗███████╗ `,
+  `██╔════╝ ██╔═══██╗██║      ██╔═══██╗██╔════╝ ██╔════╝ ██║   ██║██╔════╝ `,
+  `██║      ██║   ██║██║      ██║   ██║███████╗ ███████╗ ██║   ██║███████╗ `,
+  `██║      ██║   ██║██║      ██║   ██║╚════██║ ╚════██║ ██║   ██║╚════██║ `,
+  `╚██████╗ ╚██████╔╝███████╗ ╚██████╔╝███████║ ███████║ ╚██████╔╝███████║ `,
+  ` ╚═════╝  ╚═════╝ ╚══════╝  ╚═════╝ ╚══════╝ ╚══════╝  ╚═════╝ ╚══════╝ `,
 ]
-
-const SHADOW = ` ~~~~   ~~~~  ~~~~~~  ~~~~  ~~~~~  ~~~~~   ~~~~  ~~~~~`
 
 // COLO, for the narrower exit banner printed beside the session title.
 const SHORT = [`████ ████ ██   ████ `, `██   █  █ ██   █  █ `, `████ ████ ████ ████ `]
 
 const modern = {
-  tui: [...WORDMARK, SHADOW],
+  tui: WORDMARK,
   plain: WORDMARK,
   exit: SHORT,
 }
 
 const fallback = {
-  tui: [...WORDMARK, SHADOW],
+  tui: WORDMARK,
   plain: WORDMARK,
   exit: SHORT,
 }

@@ -66,9 +66,19 @@ export function logo(pad?: string) {
         "\x1b[38;2;240;169;75m",
         "\x1b[38;2;212;118;42m",
         "\x1b[38;2;168;83;32m",
-        "\x1b[38;2;122;58;22m",
+        "\x1b[38;2;138;66;24m",
+        "\x1b[38;2;107;51;18m",
       ]
-    : ["\x1b[38;5;223m", "\x1b[38;5;215m", "\x1b[38;5;173m", "\x1b[38;5;130m", "\x1b[38;5;94m"]
+    : [
+        "\x1b[38;5;223m",
+        "\x1b[38;5;215m",
+        "\x1b[38;5;173m",
+        "\x1b[38;5;130m",
+        "\x1b[38;5;94m",
+        "\x1b[38;5;58m",
+      ]
+  // ANSI Shadow bevels are the extruded side of each letter: two steps darker.
+  const BEVEL = /[╗╝╚═║╔╠╣╦╩╬]/
   const left = {
     fg: "\x1b[90m",
     shadow: "\x1b[38;5;235m",
@@ -80,7 +90,7 @@ export function logo(pad?: string) {
     bg: truecolor ? "\x1b[48;2;90;44;18m" : "\x1b[48;5;58m",
   }
   const gap = " "
-  const draw = (line: string, fg: string, shadow: string, bg: string) => {
+  const draw = (line: string, fg: string, shadow: string, bg: string, edge?: string) => {
     const parts: string[] = []
     for (const char of line) {
       if (char === "_") {
@@ -99,7 +109,7 @@ export function logo(pad?: string) {
         parts.push(" ")
         continue
       }
-      parts.push(fg, char, reset)
+      parts.push(edge && BEVEL.test(char) ? edge : fg, char, reset)
     }
     return parts.join("")
   }
@@ -110,7 +120,8 @@ export function logo(pad?: string) {
     const other = glyphs.right[index] ?? ""
     // kilocode_change - step down the bronze ramp per row
     const tone = BRONZE[Math.min(index, BRONZE.length - 1)]
-    result.push(draw(other, tone, right.shadow, right.bg))
+    const edge = BRONZE[Math.min(index + 2, BRONZE.length - 1)]
+    result.push(draw(other, tone, right.shadow, right.bg, edge))
     result.push(EOL)
   })
   return result.join("").trimEnd()

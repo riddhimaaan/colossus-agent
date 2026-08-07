@@ -1,6 +1,7 @@
 import { Prompt, type PromptRef } from "../component/prompt"
 import { createEffect, createMemo, createSignal, onMount } from "solid-js"
 import { Logo } from "../component/logo"
+import { HomePanel } from "../component/home-panel"
 import { useSync } from "../context/sync"
 import { Toast } from "../ui/toast"
 import { useArgs } from "../context/args"
@@ -76,6 +77,11 @@ export function Home() {
           <pluginRuntime.Slot name="home_logo" mode="replace">
             <Logo />
           </pluginRuntime.Slot>
+        </box>
+        <box height={1} minHeight={0} flexShrink={1} />
+        {/* kilocode_change - startup inventory: model, folder, skills, commands, agents, MCP */}
+        <box width="100%" maxWidth={promptMaxWidth()} flexShrink={0}>
+          <HomePanel />
         </box>
         <box height={1} minHeight={0} flexShrink={1} />
         <box width="100%" maxWidth={promptMaxWidth()} zIndex={1000} paddingTop={1} flexShrink={0}>
