@@ -6,8 +6,15 @@ root="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 runtime="$root/.runtime"
 launch_directory="$PWD"
 host_home="$HOME"
-key_file="$host_home/.config/colossus/openrouter-api-key"
+# Settings live in the user's home config, the way Kilo uses ~/.config/kilo.
+# Captured from the real HOME before it is remapped into .runtime/ below.
+config_dir="${COLOSSUS_CONFIG_DIR:-$host_home/.config/colossus}"
+key_file="$config_dir/openrouter-api-key"
 legacy_key_file="$host_home/.config/creative-cli/openrouter-api-key"
+
+# Create the settings home on first run so a fresh install has somewhere to put
+# skills without the user having to make the folders by hand.
+mkdir -p "$config_dir"/{skills,command,agent}
 
 # A user-created, owner-only key file is the source of truth. Prefer it over
 # inherited terminal variables: old shell tabs can otherwise retain a revoked
@@ -26,7 +33,7 @@ export XDG_CONFIG_HOME="$runtime/config"
 export XDG_DATA_HOME="$runtime/data"
 export XDG_CACHE_HOME="$runtime/cache"
 export XDG_STATE_HOME="$runtime/state"
-export KILO_CONFIG_DIR="$root/profile"
+export KILO_CONFIG_DIR="$config_dir"
 export KILO_DISABLE_EXTERNAL_SKILLS=1
 # Permit skills and MCP/config files in the user's active workspace. The source
 # checkout itself carries Kilo's bundled coding material, so keep project config
