@@ -2,7 +2,6 @@
 import { Permission } from "@/permission"
 import { NamedError } from "@opencode-ai/core/util/error"
 import { Glob } from "@opencode-ai/core/util/glob"
-import * as Truncate from "../../tool/truncate"
 import { Config } from "../../config/config"
 import type { Info as AgentInfo } from "../../agent/agent"
 import { Schema } from "effect"
@@ -10,11 +9,6 @@ import path from "path"
 import { Global } from "@opencode-ai/core/global"
 import { Flag } from "@opencode-ai/core/flag/flag"
 import { applyEdits, modify, parse as parseJsonc } from "jsonc-parser"
-
-import PROMPT_DEBUG from "../../agent/prompt/debug.txt"
-import PROMPT_ORCHESTRATOR from "../../agent/prompt/orchestrator.txt"
-import PROMPT_ASK from "../../agent/prompt/ask.txt"
-import PROMPT_EXPLORE from "../../agent/prompt/explore.txt"
 
 export const bash: Record<string, "allow" | "ask" | "deny"> = {
   "*": "ask",
@@ -58,6 +52,9 @@ export const bash: Record<string, "allow" | "ask" | "deny"> = {
   "gunzip *": "allow",
 }
 
+// Retained as a vetted read-only bash allowlist (pager and redirection escapes
+// are denied; see readonly-bash-permissions.test.ts). No agent applies it since
+// the ask/plan guards were removed, but the profile can opt into it.
 export const readOnlyBash: Record<string, "allow" | "ask" | "deny"> = {
   "*": "deny",
   "cat *": "allow",
@@ -143,36 +140,6 @@ export const readOnlyBash: Record<string, "allow" | "ask" | "deny"> = {
   "man *-H*": "deny",
 }
 
-function askGuard(mcp: Record<string, "allow" | "ask" | "deny"> = {}) {
-  return Permission.fromConfig({
-    "*": "deny",
-    bash: readOnlyBash,
-    read: {
-      "*": "allow",
-      "*.env": "ask",
-      "*.env.*": "ask",
-      "*.env.example": "allow",
-    },
-    grep: "allow",
-    glob: "allow",
-    list: "allow",
-    skill: "allow",
-    question: "allow",
-    webfetch: "allow",
-    websearch: "allow",
-    codebase_search: "allow",
-    semantic_search: "allow",
-    external_directory: {
-      [Truncate.GLOB]: "allow",
-    },
-    ...mcp,
-  })
-}
-
-function denies(user: Permission.Ruleset) {
-  return user.filter((rule) => rule.action === "deny")
-}
-
 function editRestrictions(rules: Permission.Ruleset) {
   const edit = rules.filter((rule) => rule.permission === "edit")
   return edit.filter((rule, index) => {
@@ -182,17 +149,6 @@ function editRestrictions(rules: Permission.Ruleset) {
     // plan guard supplies the source catch-all, so do not append it alone.
     return !edit.slice(index + 1).some((next) => next.action !== "deny")
   })
-}
-
-function restrictions(user: Permission.Ruleset) {
-  return [
-    ...user.filter((rule) => rule.action === "deny" && rule.permission !== "edit"),
-    ...editRestrictions(user),
-  ]
-}
-
-function askEditGuard() {
-  return Permission.fromConfig({ edit: "deny" })
 }
 
 // Upstream v1.14.33 builds Agent state outside the Instance ALS, so reading
@@ -222,40 +178,6 @@ export function hardenPlan(
   if (key !== "plan" && key !== "architect") return
   const edit = explicit.map(editRestrictions)
   item.permission = Permission.merge(item.permission, planEditGuard(worktree), ...edit)
-}
-
-function planGuard(worktree: string, mcp: Record<string, "allow" | "ask" | "deny"> = {}) {
-  return Permission.fromConfig({
-    "*": "deny",
-    question: "allow",
-    suggest: "allow",
-    skill: "allow",
-    plan_exit: "allow",
-    task: {
-      "*": "allow",
-      general: "deny",
-    },
-    bash: readOnlyBash,
-    read: {
-      "*": "allow",
-      "*.env": "ask",
-      "*.env.*": "ask",
-      "*.env.example": "allow",
-    },
-    grep: "allow",
-    glob: "allow",
-    list: "allow",
-    webfetch: "allow",
-    websearch: "allow",
-    codebase_search: "allow",
-    semantic_search: "allow",
-    external_directory: {
-      [Truncate.GLOB]: "allow",
-      [path.join(Global.Path.data, "plans", "*")]: "allow",
-    },
-    edit: planEditRules(worktree),
-    ...mcp,
-  })
 }
 
 // Generate per-server MCP wildcard rules that allow MCP tools with user approval.
@@ -301,16 +223,16 @@ export function cacheKey(cfg: Config.Info) {
   })
 }
 
-// Map "build" config key to "code" for backward compatibility.
+// Map legacy primary-agent names to the single visible agent.
 export function resolveKey(name: string): string {
-  return name === "build" ? "code" : name
+  return name === "build" || name === "code" ? "agent" : name
 }
 
-// Remap "build" → "code" in agent config entries for backward compat in the config loop.
+// Remap legacy primary-agent configuration entries to "agent".
 export function preprocessConfig<T>(agentConfig: Record<string, T>): Record<string, T> {
   const result: Record<string, T> = {}
   for (const [key, value] of Object.entries(agentConfig)) {
-    result[key === "build" ? "code" : key] = value
+    result[key === "build" || key === "code" ? "agent" : key] = value
   }
   return result
 }
@@ -370,12 +292,7 @@ export function telemetryOptions(_cfg: Config.Info) {
   return { isEnabled: false as const }
 }
 
-// Patch the base agents map in-place with all kilo-specific changes:
-// - Rename build → code
-// - Patch plan with readOnlyBash, mcpRules, .kilo paths
-// - Patch explore with codebase_search and conditional prompt
-// - Patch appropriate agents with semantic_search
-// - Add debug, orchestrator, ask agents
+// Keep one visible primary agent and preserve only generic internal agents.
 export function patchAgents(
   agents: Record<
     string,
@@ -406,140 +323,34 @@ export function patchAgents(
   worktree: string,
   whitelistedDirs: string[],
 ) {
-  // Rename "build" → "code" for backward compatibility
+  // Rename the upstream primary agent to the single visible agent.
   if (agents.build) {
-    agents.code = {
+    agents.agent = {
       ...agents.build,
-      name: "code",
+      name: "agent",
+      description: "Primary local agent. Uses skills, plugins, MCP tools, and configured permissions when relevant.",
+      // The Colossus profile owns the machine-safety baseline, so this keeps
+      // only the grants the primary agent needs to function. These four come
+      // from upstream's build agent; dropping them silently disabled asking the
+      // user a structured question. The permissive part is `defaults`, which is
+      // narrowed by the profile's "*": "ask", not by removing these.
       permission: Permission.merge(
         defaults,
-        agents.build.permission,
+        Permission.fromConfig({
+          question: "allow",
+          suggest: "allow",
+          interactive_terminal: "allow",
+        }),
         user,
-        Permission.fromConfig({ semantic_search: "allow" }),
       ),
     }
     delete agents.build
   }
 
-  // Patch plan mode
-  if (agents.plan) {
-    agents.plan = {
-      ...agents.plan,
-      description: "Plan mode. Can only edit plan files; all other filesystem mutations are denied.",
-      permission: Permission.merge(
-        defaults,
-        planGuard(worktree, kilo.mcpRules),
-        user,
-        planEditGuard(worktree),
-        restrictions(user),
-      ),
-    }
-  }
-
-  // Patch explore with codebase_search and conditional prompt
-  if (agents.explore) {
-    agents.explore = {
-      ...agents.explore,
-      permission: Permission.merge(
-        defaults,
-        Permission.fromConfig({
-          "*": "deny",
-          grep: "allow",
-          glob: "allow",
-          list: "allow",
-          bash: "allow",
-          skill: "allow",
-          webfetch: "allow",
-          websearch: "allow",
-          codebase_search: "allow",
-          semantic_search: "allow",
-          read: "allow",
-          external_directory: {
-            // Mirror upstream explore's shape: the outer "*": "deny" above wins
-            // over defaults' external_directory rules via findLast, so re-apply
-            // the full whitelist (Truncate.GLOB, tmp, skill, config, globalDirs)
-            // here. Upstream adds these inline in agent.ts; we do the same from
-            // within the patch.
-            "*": "ask",
-            ...Object.fromEntries(whitelistedDirs.map((dir) => [dir, "allow"])),
-          },
-        }),
-        user,
-      ),
-      prompt: cfg.experimental?.codebase_search
-        ? `Prefer using the codebase_search tool for codebase searches — it performs intelligent multi-step code search and returns the most relevant code spans.\n\n${PROMPT_EXPLORE}`
-        : PROMPT_EXPLORE,
-    }
-  }
-
-  // Add debug agent
-  agents.debug = {
-    name: "debug",
-    description: "Diagnose and fix software issues with systematic debugging methodology.",
-    prompt: PROMPT_DEBUG,
-    options: {},
-    permission: Permission.merge(
-      defaults,
-      Permission.fromConfig({
-        question: "allow",
-        suggest: "allow", // kilocode_change
-        plan_enter: "allow",
-        semantic_search: "allow",
-      }),
-      user,
-    ),
-    mode: "primary",
-    native: true,
-  }
-
-  // Add orchestrator agent
-  agents.orchestrator = {
-    name: "orchestrator",
-    description: "Coordinate complex tasks by delegating to specialized agents in parallel.",
-    prompt: PROMPT_ORCHESTRATOR,
-    options: {},
-    permission: Permission.merge(
-      defaults,
-      Permission.fromConfig({
-        "*": "deny",
-        read: "allow",
-        grep: "allow",
-        glob: "allow",
-        list: "allow",
-        question: "allow",
-        skill: "allow",
-        suggest: "allow", // kilocode_change
-        task: "allow",
-        todoread: "allow",
-        todowrite: "allow",
-        webfetch: "allow",
-        websearch: "allow",
-        codebase_search: "allow",
-        external_directory: {
-          [Truncate.GLOB]: "allow",
-        },
-      }),
-      user,
-      // Enforce bash deny after user so user config cannot re-enable shell
-      Permission.fromConfig({
-        bash: "deny",
-      }),
-    ),
-    mode: "primary",
-    native: true,
-    deprecated: true,
-  }
-
-  // Add ask agent
-  agents.ask = {
-    name: "ask",
-    description: "Get answers and explanations without making changes to the codebase.",
-    prompt: PROMPT_ASK,
-    options: {},
-    permission: Permission.merge(defaults, askGuard(kilo.mcpRules), user, askEditGuard(), denies(user)),
-    mode: "primary",
-    native: true,
-  }
+  delete agents.plan
+  delete agents.explore
+  delete agents.scout
+  delete agents.general
 
   hardenSystemAgents(agents)
 }

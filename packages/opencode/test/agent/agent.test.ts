@@ -57,153 +57,85 @@ it.instance("returns default native agents when no config", () =>
   Effect.gen(function* () {
     const agents = yield* load((svc) => svc.list())
     const names = agents.map((a) => a.name)
-    expect(names).toContain("code")
-    expect(names).toContain("plan")
-    expect(names).toContain("general")
-    expect(names).toContain("explore")
-    expect(names).not.toContain("scout") // kilocode_change
+    expect(names).toContain("agent")
+    // Only the hidden system utility agents survive alongside the one primary.
     expect(names).toContain("compaction")
     expect(names).toContain("title")
     expect(names).toContain("summary")
   }),
 )
 
-it.instance("build agent has correct default properties", () =>
+// Colossus exposes exactly one primary agent and no task subagents. The coding
+// personas (code/plan/explore/scout/general/debug/orchestrator/ask) are removed
+// in patchAgents so the user is never handed a workflow they did not ask for.
+it.instance("the coding personas and task subagents are removed", () =>
   Effect.gen(function* () {
-    const build = yield* load((svc) => svc.get("build"))
-    expect(build).toBeDefined()
-    expect(build?.mode).toBe("primary")
-    expect(build?.native).toBe(true)
-    expect(evalPerm(build, "edit")).toBe("allow")
-    expect(evalPerm(build, "bash")).toBe("ask")
-    expect(evalPerm(build, "repo_clone")).toBe("deny")
-    expect(evalPerm(build, "repo_overview")).toBe("deny")
-    expect(evalPerm(build, "interactive_terminal")).toBe("allow") // kilocode_change
+    const agents = yield* load((svc) => svc.list())
+    const names = agents.map((a) => a.name)
+    for (const removed of ["plan", "explore", "scout", "general", "debug", "orchestrator", "ask"]) {
+      expect(names).not.toContain(removed)
+      expect(yield* load((svc) => svc.get(removed))).toBeUndefined()
+    }
+    // "build" and "code" are not listed, but resolveKey still aliases them to
+    // "agent" so existing configs and saved sessions keep working.
+    expect(names).not.toContain("build")
+    expect(names).not.toContain("code")
+    expect((yield* load((svc) => svc.get("build")))?.name).toBe("agent")
+    expect((yield* load((svc) => svc.get("code")))?.name).toBe("agent")
   }),
 )
 
-it.instance("plan agent denies edits except .opencode/plans/*", () =>
+it.instance("exactly one visible primary agent remains", () =>
   Effect.gen(function* () {
-    const plan = yield* load((svc) => svc.get("plan"))
-    expect(plan).toBeDefined()
-    // Wildcard is denied
-    expect(evalPerm(plan, "edit")).toBe("deny")
-    expect(evalPerm(plan, "interactive_terminal")).toBe("deny") // kilocode_change
-    // But specific path is allowed
-    expect(Permission.evaluate("edit", ".opencode/plans/foo.md", plan!.permission).action).toBe("allow")
+    const agents = yield* load((svc) => svc.list())
+    const primary = agents.filter((a) => a.mode === "primary" && a.hidden !== true)
+    expect(primary.map((a) => a.name)).toEqual(["agent"])
+    expect(agents.filter((a) => a.mode === "subagent" && a.hidden !== true)).toEqual([])
   }),
 )
 
-it.instance("plan agent denies the general subagent by default", () =>
+it.instance("agent has correct default properties", () =>
   Effect.gen(function* () {
-    const plan = yield* load((svc) => svc.get("plan"))
-    expect(plan).toBeDefined()
-    expect(Permission.evaluate("task", "general", plan!.permission).action).toBe("deny")
-    expect(Permission.evaluate("task", "explore", plan!.permission).action).toBe("allow")
-    expect(Permission.evaluate("task", "custom", plan!.permission).action).toBe("allow")
-  }),
-)
-
-it.instance(
-  "user permission can allow the general subagent from plan mode",
-  () =>
-    Effect.gen(function* () {
-      const plan = yield* load((svc) => svc.get("plan"))
-      expect(plan).toBeDefined()
-      expect(Permission.evaluate("task", "general", plan!.permission).action).toBe("allow")
-    }),
-  {
-    config: {
-      permission: {
-        task: {
-          general: "allow",
-        },
-      },
-    },
-  },
-)
-
-it.instance("explore agent denies edit and write", () =>
-  Effect.gen(function* () {
-    const explore = yield* load((svc) => svc.get("explore"))
-    expect(explore).toBeDefined()
-    expect(explore?.mode).toBe("subagent")
-    expect(evalPerm(explore, "edit")).toBe("deny")
-    expect(evalPerm(explore, "write")).toBe("deny")
-    expect(evalPerm(explore, "todowrite")).toBe("deny")
-    expect(evalPerm(explore, "interactive_terminal")).toBe("deny") // kilocode_change
-  }),
-)
-
-it.instance("explore agent asks for external directories and allows whitelisted external paths", () =>
-  Effect.gen(function* () {
-    const explore = yield* load((svc) => svc.get("explore"))
-    expect(explore).toBeDefined()
-    expect(Permission.evaluate("external_directory", "/some/other/path", explore!.permission).action).toBe("ask")
-    expect(Permission.evaluate("external_directory", Truncate.GLOB, explore!.permission).action).toBe("allow")
-    expect(
-      Permission.evaluate("external_directory", path.join(Global.Path.tmp, "agent-work"), explore!.permission).action,
-    ).toBe("allow")
-  }),
-)
-
-// kilocode_change start - Scout is opt-in and owns repository research permissions
-scout.instance("scout agent allows repo cloning and repo cache reads", () =>
-  Effect.gen(function* () {
-    const agent = yield* load((svc) => svc.get("scout"))
+    const agent = yield* load((svc) => svc.get("agent"))
     expect(agent).toBeDefined()
-    expect(agent?.mode).toBe("subagent")
-    expect(evalPerm(agent, "repo_clone")).toBe("allow")
-    expect(evalPerm(agent, "repo_overview")).toBe("allow")
-    expect(evalPerm(agent, "edit")).toBe("deny")
-    expect(
-      Permission.evaluate(
-        "external_directory",
-        path.join(Global.Path.repos, "github.com", "owner", "repo", "README.md"),
-        agent!.permission,
-      ).action,
-    ).toBe("allow")
+    expect(agent?.mode).toBe("primary")
+    expect(agent?.native).toBe(true)
+    // These are the permissive upstream defaults; the shipped profile/kilo.jsonc
+    // is what narrows them to "*": "ask" for a real session.
+    expect(evalPerm(agent, "edit")).toBe("allow")
+    expect(evalPerm(agent, "bash")).toBe("ask")
+    // Grants carried over from upstream's build agent. Dropping question in
+    // particular silently broke the agent's ability to ask the user anything.
+    expect(evalPerm(agent, "question")).toBe("allow")
+    expect(evalPerm(agent, "suggest")).toBe("allow")
+    expect(evalPerm(agent, "interactive_terminal")).toBe("allow")
+    // plan_enter stays denied: Colossus has no plan mode.
+    expect(evalPerm(agent, "plan_enter")).not.toBe("allow")
+    expect(evalPerm(agent, "repo_clone")).toBe("deny")
+    expect(evalPerm(agent, "repo_overview")).toBe("deny")
   }),
 )
 
+// kilocode_change - references config previously created scout-backed subagents;
+// scout is removed, so the config must not resurrect a subagent.
 scout.instance(
-  "references config creates scout-backed subagents",
+  "references config no longer creates scout-backed subagents",
   () =>
     Effect.gen(function* () {
       const agents = yield* load((svc) => svc.list())
       const names = agents.map((agent) => agent.name)
-      expect(names).toContain("effect")
-      expect(names).toContain("effectFull")
-      expect(names).toContain("localdocs")
-      expect(names).toContain("localdocsFull")
+      expect(names).not.toContain("scout")
+      expect(names).not.toContain("effect")
+      expect(names).not.toContain("localdocs")
     }),
   {
     config: {
-      // kilocode_change - Scout-backed Kilo agents use the supported references config
       references: {
         effect: "github.com/effect/effect-smol",
-        effectFull: {
-          repository: "Effect-TS/effect",
-          branch: "main",
-        },
         localdocs: "../docs",
-        localdocsFull: {
-          path: "../local-docs",
-        },
       },
     },
   },
-)
-// kilocode_change end
-
-it.instance("general agent denies todo tools", () =>
-  Effect.gen(function* () {
-    const general = yield* load((svc) => svc.get("general"))
-    expect(general).toBeDefined()
-    expect(general?.mode).toBe("subagent")
-    expect(general?.hidden).toBeUndefined()
-    expect(evalPerm(general, "todowrite")).toBe("deny")
-  }),
 )
 
 it.instance("compaction agent denies all permissions", () =>
@@ -475,16 +407,17 @@ it.instance(
   () =>
     Effect.gen(function* () {
       const names = (yield* load((svc) => svc.list())).map((a) => a.name)
-      expect(names[0]).toBe("plan")
+      expect(names[0]).toBe("zebra")
       expect(names.slice(1)).toEqual(names.slice(1).toSorted((a, b) => a.localeCompare(b)))
     }),
   {
     config: {
-      default_agent: "plan",
+      // A user-defined primary agent, since the native primaries are gone.
+      default_agent: "zebra",
       agent: {
         zebra: {
           description: "Zebra",
-          mode: "subagent",
+          mode: "primary",
         },
         alpha: {
           description: "Alpha",
@@ -682,31 +615,32 @@ it.instance(
   },
 )
 
-it.instance("defaultAgent returns code when no default_agent config", () =>
+it.instance("defaultAgent returns agent when no default_agent config", () =>
   Effect.gen(function* () {
     const agent = yield* load((svc) => svc.defaultAgent())
-    expect(agent).toBe("code")
+    expect(agent).toBe("agent")
   }),
 )
 
-it.instance("defaultInfo returns resolved code agent when no default_agent config", () =>
+it.instance("defaultInfo returns the resolved agent when no default_agent config", () =>
   Effect.gen(function* () {
     const agent = yield* load((svc) => svc.defaultInfo())
-    expect(agent.name).toBe("code")
+    expect(agent.name).toBe("agent")
     expect(agent.mode).toBe("primary")
   }),
 )
 
+// kilocode_change - legacy configs naming the old primary agent still resolve.
 it.instance(
-  "defaultAgent respects default_agent config set to plan",
+  "default_agent set to a legacy primary name resolves to agent",
   () =>
     Effect.gen(function* () {
       const agent = yield* load((svc) => svc.defaultAgent())
-      expect(agent).toBe("plan")
+      expect(agent).toBe("agent")
     }),
   {
     config: {
-      default_agent: "plan",
+      default_agent: "code",
     },
   },
 )
@@ -732,10 +666,17 @@ it.instance(
 
 it.instance(
   "defaultAgent throws when default_agent points to subagent",
-  () => expectDefaultAgentError('default agent "explore" is a subagent'),
+  () => expectDefaultAgentError('default agent "helper" is a subagent'),
   {
     config: {
-      default_agent: "explore",
+      // The native subagents are removed, so define one to exercise the guard.
+      default_agent: "helper",
+      agent: {
+        helper: {
+          description: "Helper",
+          mode: "subagent",
+        },
+      },
     },
   },
 )
@@ -761,17 +702,18 @@ it.instance(
 )
 
 it.instance(
-  "defaultAgent returns plan when build is disabled and default_agent not set",
+  "defaultAgent falls back to the next primary when agent is disabled",
   () =>
     Effect.gen(function* () {
       const agent = yield* load((svc) => svc.defaultAgent())
-      // build is disabled, so it should return plan (next primary agent)
-      expect(agent).toBe("plan")
+      // "agent" is disabled, so the next visible primary wins.
+      expect(agent).toBe("fallback")
     }),
   {
     config: {
       agent: {
-        build: { disable: true },
+        agent: { disable: true },
+        fallback: { description: "Fallback", mode: "primary" },
       },
     },
   },

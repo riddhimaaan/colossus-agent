@@ -197,17 +197,21 @@ describe("kilocode tool registry indexing", () => {
             Effect.gen(function* () {
               const agent = yield* Agent.Service
               const build = yield* agent.get("build")
-              const explore = yield* agent.get("explore")
+              // kilocode_change - the native subagents are removed; declare one.
+              const prober = yield* agent.get("prober")
               const registry = yield* ToolRegistry.Service
               const primary = yield* registry.tools({ ...ref, agent: build })
-              const subagent = yield* registry.tools({ ...ref, agent: explore })
+              const subagent = yield* registry.tools({ ...ref, agent: prober })
 
               expect(primary.map((tool) => tool.id)).toContain("interactive_terminal")
               expect(subagent.map((tool) => tool.id)).not.toContain("interactive_terminal")
             }),
           {
             git: true,
-            config: { permission: { interactive_terminal: "allow" } },
+            config: {
+              permission: { interactive_terminal: "allow" },
+              agent: { prober: { description: "Prober subagent", mode: "subagent" as const } },
+            },
           },
         ),
       (prev) =>

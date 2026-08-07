@@ -302,6 +302,10 @@ const unixNoLLMServer = process.platform !== "win32" ? noLLMServer.instance : no
 // Config that registers a custom "test" provider with a "test-model" model
 // so provider model lookup succeeds inside the loop.
 const cfg = {
+  // kilocode_change - the native "general" subagent is removed, but the
+  // subtask/task coverage in this file delegates to it by name. Declare it on
+  // the base config so both `{ config: cfg }` and providerCfg() carry it.
+  agent: { general: { description: "General subagent", mode: "subagent" as const } },
   provider: {
     test: {
       name: "Test",
@@ -1000,7 +1004,11 @@ it.instance("failed subtask preserves metadata on error tool state", () =>
     const { llm } = yield* useServerConfig((url) => ({
       ...providerCfg(url),
       agent: {
+        // kilocode_change - keep mode: this override replaces providerCfg's
+        // agent block wholesale, and general must stay a subagent.
         general: {
+          description: "General subagent",
+          mode: "subagent" as const,
           model: "test/missing-model",
         },
       },
@@ -1155,7 +1163,7 @@ it.instance(
       const tool = yield* pollWithTimeout(
         Effect.gen(function* () {
           const msgs = yield* MessageV2.filterCompactedEffect(chat.id)
-          const assistant = msgs.findLast((item) => item.info.role === "assistant" && item.info.agent === "code")
+          const assistant = msgs.findLast((item) => item.info.role === "assistant" && item.info.agent === "agent")
           const tool = assistant?.parts.find(
             (part): part is SessionV1.ToolPart => part.type === "tool" && part.tool === "task",
           )
@@ -1901,12 +1909,9 @@ it.instance("prompt submitted during an active run is included in the next LLM i
     expect(inputs).toHaveLength(2)
     const messages = inputs.at(-1)?.messages
     if (!Array.isArray(messages)) throw new Error("expected LLM messages")
-    // kilocode_change start - Kilo appends environment details to queued user prompts
-    expect(messages.at(-1)).toMatchObject({
-      role: "user",
-      content: expect.arrayContaining([{ type: "text", text: "second" }]),
-    })
-    // kilocode_change end
+    // kilocode_change - injectEditorContext is a no-op, so nothing is appended
+    // to a queued user prompt and the content stays the user's plain text.
+    expect(messages.at(-1)).toMatchObject({ role: "user", content: "second" })
   }),
   10_000,
 )
@@ -2720,7 +2725,8 @@ noLLMServer.instance(
         source: { type: "file", path: "docs", text: { value: "@docs" } },
       })
       expect(fileURLToPath(files[0].url)).toBe(docs)
-      expect(agents.map((agent) => agent.name)).toEqual(["code"])
+      // kilocode_change - @build resolves to the renamed primary agent
+      expect(agents.map((agent) => agent.name)).toEqual(["agent"])
     }),
   {
     config: {
@@ -3188,7 +3194,8 @@ noLLMServer.instance(
         const err = Cause.squash(exit.cause)
         expect(NamedError.Unknown.isInstance(err)).toBe(true)
         if (NamedError.Unknown.isInstance(err)) {
-          expect(err.data.message).toContain("code")
+          // kilocode_change - the single primary agent is now named "agent"
+          expect(err.data.message).toContain("agent")
         }
       }
     }),

@@ -35,6 +35,12 @@ const ref = {
   modelID: ModelV2.ID.make("test-model"),
 }
 
+// kilocode_change - the native subagents (explore/general) are removed, so
+// these delegation tests declare their own subagent to target.
+const SUBAGENT = {
+  config: { agent: { prober: { description: "Prober subagent", mode: "subagent" as const } } },
+}
+
 const it = testEffect(
   LayerNode.compile(
     LayerNode.group([
@@ -157,7 +163,7 @@ describe("Kilo task nesting", () => {
           {
             description: "inspect bug",
             prompt: "look into the cache key path",
-            subagent_type: "explore",
+            subagent_type: "prober",
           },
           {
             sessionID: chat.id,
@@ -176,8 +182,9 @@ describe("Kilo task nesting", () => {
         expect(kids[0]?.id).toBe(result.metadata.sessionId)
         expect(kids[0]?.parentID).toBe(chat.id)
         expect(seen?.sessionID).toBe(result.metadata.sessionId)
-        expect(seen?.agent).toBe("explore")
+        expect(seen?.agent).toBe("prober")
       }),
+      SUBAGENT,
     ),
   )
 
@@ -210,7 +217,7 @@ describe("Kilo task nesting", () => {
           {
             description: "start inherited process",
             prompt: "start a process",
-            subagent_type: "explore",
+            subagent_type: "prober",
           },
           {
             sessionID: chat.id,
@@ -231,6 +238,7 @@ describe("Kilo task nesting", () => {
         expect(inherited[0]?.lifetime).toBe("session")
         yield* Effect.promise(() => BackgroundProcess.stopSession(chat.id))
       }),
+      SUBAGENT,
     ),
   )
 
@@ -249,7 +257,7 @@ describe("Kilo task nesting", () => {
             {
               description: "inspect bug",
               prompt: "look into the cache key path",
-              subagent_type: "explore",
+              subagent_type: "prober",
             },
             {
               sessionID: chat.id,
@@ -289,6 +297,7 @@ describe("Kilo task nesting", () => {
         }),
       {
         config: {
+          agent: { prober: { description: "Prober subagent", mode: "subagent" as const } },
           permission: {
             task: "allow",
             question: "allow",
@@ -415,7 +424,7 @@ describe("Kilo task nesting", () => {
               {
                 description: "inspect bug",
                 prompt: "look into the cache key path",
-                subagent_type: "explore",
+                subagent_type: "prober",
                 task_id: child.id,
               },
               {
@@ -443,7 +452,12 @@ describe("Kilo task nesting", () => {
           expect(count).toBeGreaterThan(0)
           expect(resumed.permission?.filter((rule) => rule.permission === "bash")).toHaveLength(count ?? 0)
         }),
-      { config: { sandbox: { enabled: true } } },
+      {
+        config: {
+          sandbox: { enabled: true },
+          agent: { prober: { description: "Prober subagent", mode: "subagent" as const } },
+        },
+      },
     ),
   )
 
@@ -462,7 +476,7 @@ describe("Kilo task nesting", () => {
             {
               description: "inspect bug",
               prompt: "look into the cache key path",
-              subagent_type: "explore",
+              subagent_type: "prober",
               task_id: child.id,
             },
             {
@@ -481,6 +495,7 @@ describe("Kilo task nesting", () => {
         expect(Exit.isFailure(exit)).toBe(true)
         expect(yield* sessions.children(chat.id)).toHaveLength(0)
       }),
+      SUBAGENT,
     ),
   )
 })

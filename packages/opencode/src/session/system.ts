@@ -3,17 +3,7 @@ import { Context, Effect, Layer } from "effect"
 
 import { InstanceState } from "@/effect/instance-state"
 
-import PROMPT_ANTHROPIC from "./prompt/anthropic.txt"
-import PROMPT_DEFAULT from "./prompt/default.txt"
-import PROMPT_BEAST from "./prompt/beast.txt"
-import PROMPT_GEMINI from "./prompt/gemini.txt"
-import PROMPT_GPT from "./prompt/gpt.txt"
-import PROMPT_GPT55 from "./prompt/kilocode-gpt-5.5.txt" // kilocode_change
-import PROMPT_KIMI from "./prompt/kimi.txt"
-import PROMPT_LING from "./prompt/ling.txt" // kilocode_change
-
-import PROMPT_CODEX from "./prompt/codex.txt"
-import PROMPT_TRINITY from "./prompt/trinity.txt"
+import PROMPT_CREATIVE_CORE from "./prompt/creative-core.txt"
 import type { Provider } from "@/provider/provider"
 import type { Agent } from "@/agent/agent"
 import { Permission } from "@/permission"
@@ -27,66 +17,23 @@ import { PermissionV1 } from "@opencode-ai/core/v1/permission"
 import { PluginV2 } from "@opencode-ai/core/plugin" // kilocode_change
 
 // kilocode_change start
-import SOUL from "../kilocode/soul.txt"
 import type { EditorContext } from "../kilocode/editor-context"
-import { KilocodeSystemPrompt } from "../kilocode/system-prompt"
-import { isLing } from "../kilocode/model-match"
 import { Config } from "@/config/config"
 import * as KiloReference from "@/kilocode/reference"
 // kilocode_change end
 
 // kilocode_change start
 export function instructions() {
-  return PROMPT_CODEX.trim()
+  return PROMPT_CREATIVE_CORE.trim()
 }
 
 export function soul() {
-  return SOUL.trim()
+  return PROMPT_CREATIVE_CORE.trim()
 }
 // kilocode_change end
 
-export function provider(model: Provider.Model) {
-  // kilocode_change start
-  function prompt() {
-    switch (model.prompt) {
-      case "anthropic":
-        return [PROMPT_ANTHROPIC]
-      case "anthropic_without_todo":
-        return [PROMPT_DEFAULT]
-      case "beast":
-        return [PROMPT_BEAST]
-      case "codex":
-        return [PROMPT_CODEX]
-      case "gemini":
-        return [PROMPT_GEMINI]
-      case "gpt55":
-        return [PROMPT_GPT55]
-      case "ling":
-        return [PROMPT_LING]
-      case "trinity":
-        return [PROMPT_TRINITY]
-    }
-    return undefined
-  }
-
-  const kilo = prompt()
-  if (kilo) return kilo
-  // kilocode_change end
-
-  if (model.api.id.includes("gpt-4") || model.api.id.includes("o1") || model.api.id.includes("o3"))
-    return [PROMPT_BEAST]
-  if (model.api.id.includes("gpt")) {
-    if (model.api.id.includes("codex")) {
-      return [PROMPT_CODEX]
-    }
-    return [PROMPT_GPT]
-  }
-  if (model.api.id.includes("gemini-")) return [PROMPT_GEMINI]
-  if (model.api.id.includes("claude")) return [PROMPT_ANTHROPIC]
-  if (model.api.id.toLowerCase().includes("trinity")) return [PROMPT_TRINITY]
-  if (model.api.id.toLowerCase().includes("kimi")) return [PROMPT_KIMI]
-  if (isLing(model.api.id)) return [PROMPT_LING] // kilocode_change
-  return [PROMPT_DEFAULT]
+export function provider(_model: Provider.Model) {
+  return []
 }
 
 export interface Interface {
@@ -125,7 +72,11 @@ const layer = Layer.effect(
           return (yield* (yield* Reference.Service).list()).filter((reference) => reference.description !== undefined)
         }).pipe(Effect.provide(locations.get(Location.Ref.make({ directory: AbsolutePath.make(ctx.directory) }))))
         return [
-          ...KilocodeSystemPrompt.environment({ ctx, model, editor: editorContext }),
+          [
+            `The selected model is ${model.providerID}/${model.api.id}.`,
+            `Current workspace: ${ctx.directory}`,
+            `Today's date: ${new Date().toDateString()}`,
+          ].join("\n"),
           references.length === 0
             ? undefined
             : [

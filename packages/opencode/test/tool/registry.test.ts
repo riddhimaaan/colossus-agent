@@ -82,6 +82,18 @@ const websearch = testEffect(
   }),
 )
 const sandboxed = testEffect(registryLayer({ flags: { experimentalLspTool: true } }))
+// The native subagents are removed, and the registry only advertises the task
+// tool when at least one subagent is reachable, so declare one explicitly.
+const withSubagent = testEffect(
+  registryLayer({
+    config: {
+      get: () =>
+        Effect.succeed({
+          agent: { helper: { description: "Helper agent", mode: "subagent" as const } },
+        }),
+    },
+  }),
+)
 // kilocode_change end
 
 afterEach(async () => {
@@ -191,7 +203,7 @@ describe("tool.registry", () => {
     }),
   )
 
-  it.instance("hides task background parameter unless experimental background subagents are enabled", () =>
+  withSubagent.instance("hides task background parameter unless experimental background subagents are enabled", () =>
     Effect.gen(function* () {
       const registry = yield* ToolRegistry.Service
       const agent = yield* Agent.Service
@@ -205,6 +217,23 @@ describe("tool.registry", () => {
 
       expect(task?.jsonSchema).toBeDefined()
       expect((task?.jsonSchema?.properties as Record<string, unknown> | undefined)?.background).toBeUndefined()
+    }),
+  )
+
+  // kilocode_change - the counterpart of the rule above.
+  it.instance("does not expose task when no subagent is reachable", () =>
+    Effect.gen(function* () {
+      const registry = yield* ToolRegistry.Service
+      const agent = yield* Agent.Service
+      const build = yield* agent.get("build")
+      if (!build) throw new Error("build agent not found")
+      const tools = yield* registry.tools({
+        providerID: ProviderV2.ID.opencode,
+        modelID: ModelV2.ID.make("test"),
+        agent: build,
+      })
+
+      expect(tools.find((tool) => tool.id === "task")).toBeUndefined()
     }),
   )
 

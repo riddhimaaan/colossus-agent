@@ -23,14 +23,38 @@ function testAgent(input: {
   } satisfies Agent.Info
 }
 
+// kilocode_change - the native plan/general/explore agents are removed, so these
+// tests declare equivalents: hardenPlan still applies to a user-defined "plan",
+// and "prober" stands in for the read-only subagents.
+const AGENTS = {
+  config: {
+    agent: {
+      plan: {},
+      // stands in for the removed read-only "explore"
+      prober: {
+        description: "Prober subagent",
+        mode: "subagent" as const,
+        permission: { edit: "deny" as const },
+      },
+      // stands in for the removed general-purpose "general"
+      helper: {
+        description: "Helper subagent",
+        mode: "subagent" as const,
+      },
+    },
+  },
+}
+
 // `deriveSubagentSessionPermission` is imported from production. The test
 // exercises the actual helper that task.ts uses to build the subagent's
 // session permission, so any regression in that helper trips this test.
 
-it.instance("subagent permissions take precedence over parent agent restrictions", () =>
-  Effect.gen(function* () {
+it.instance(
+  "subagent permissions take precedence over parent agent restrictions",
+  () =>
+    Effect.gen(function* () {
     const planAgent = yield* Agent.use.get("plan")
-    const generalAgent = yield* Agent.use.get("general")
+    const generalAgent = yield* Agent.use.get("helper")
 
     expect(planAgent).toBeDefined()
     expect(generalAgent).toBeDefined()
@@ -52,12 +76,13 @@ it.instance("subagent permissions take precedence over parent agent restrictions
 
     expect(Permission.evaluate("edit", "/some/file.ts", effective).action).not.toBe("deny")
     expect(Permission.disabled(["edit", "write", "apply_patch"], effective)).toEqual(new Set())
-  }),
+    }),
+  AGENTS,
 )
 
 it.instance("subagent's own read-only restriction remains effective", () =>
   Effect.gen(function* () {
-    const explore = yield* Agent.use.get("explore")
+    const explore = yield* Agent.use.get("prober")
     expect(explore).toBeDefined()
 
     const parentSessionPermission: PermissionV1.Ruleset = []
@@ -69,6 +94,7 @@ it.instance("subagent's own read-only restriction remains effective", () =>
 
     expect(Permission.evaluate("edit", "/x.ts", effective).action).toBe("deny")
   }),
+  AGENTS,
 )
 
 it.instance(
@@ -94,6 +120,7 @@ it.instance(
   {
     config: {
       agent: {
+        plan: {}, // kilocode_change - native plan agent removed
         my_subagent: {
           description: "A user-defined subagent",
           mode: "subagent",
@@ -175,5 +202,11 @@ it.instance("Plan delegation preserves notebook and process mutation ceilings", 
     expect(Permission.evaluate("notebook_execute", "notebook.ipynb", rules).action).toBe("deny")
     expect(Permission.evaluate("bash", "bun run server.ts", rules).action).toBe("deny")
   }),
+  {
+    // kilocode_change - the deny baseline used to come from the native plan
+    // agent's guard. That guard is removed, so declare it here; the subject of
+    // this test is KiloTask.inherited preserving the caller's ceilings.
+    config: { agent: { plan: { permission: { "*": "deny" as const } } } },
+  },
 )
 // kilocode_change end

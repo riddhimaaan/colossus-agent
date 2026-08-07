@@ -427,7 +427,7 @@ describe("SessionPrompt compaction safety", () => {
     ),
   )
 
-  it.live("preserves current media before synthetic handoff with editor context", () =>
+  it.live("preserves current media before synthetic handoff", () =>
     provideTmpdirServer(
       Effect.fnUntraced(function* ({ llm }) {
         const prompt = yield* SessionPrompt.Service
@@ -456,7 +456,10 @@ describe("SessionPrompt compaction safety", () => {
         const body = JSON.stringify(inputs.at(-1)?.messages)
         expect(body).toContain("[Attached image/png: old.png]")
         expect(body).toContain("CURRENTIMAGE")
-        expect(body).toContain("src/app.ts")
+        // kilocode_change - the active file no longer reaches the request:
+        // injectEditorContext is a no-op so machine context stays out of the
+        // user's message. Media preservation is what this test covers.
+        expect(body).not.toContain("src/app.ts")
         expect(body).not.toContain("OLDIMAGE")
         expect(body).not.toContain("[Attached image/png: current.png]")
       }),

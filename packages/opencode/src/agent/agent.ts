@@ -421,7 +421,10 @@ const layer = Layer.effect(
           return `Invalid Scout reference for repository ${reference.repository}`
         }
 
-        if (flags.experimentalScout) {
+        // Reference subagents clone the scout agent's permissions. Colossus
+        // removes scout in patchAgents, so without this guard any config with a
+        // references block crashes Agent.list() on startup.
+        if (flags.experimentalScout && agents.scout) {
           const references = cfg.references ?? cfg.reference ?? {}
           const resolvedReferences = KiloReference.resolveAll({
             references,
@@ -485,7 +488,7 @@ const layer = Layer.effect(
             agents,
             values(),
             sortBy(
-              [(x) => (cfg.default_agent ? x.name === cfg.default_agent : x.name === "code"), "desc"], // kilocode_change - renamed from "build" to "code"
+              [(x) => (cfg.default_agent ? x.name === cfg.default_agent : x.name === "agent"), "desc"],
               [(x) => x.name, "asc"],
             ),
           )
@@ -503,10 +506,8 @@ const layer = Layer.effect(
             if (agent.hidden === true) throw new Error(`default agent "${c.default_agent}" is hidden`)
             return agent
           }
-          // kilocode_change start - prefer "code" as default agent (key order changes after rename from "build")
-          const code = agents.code
-          if (code && code.mode !== "subagent" && code.hidden !== true) return code
-          // kilocode_change end
+          const agent = agents.agent
+          if (agent && agent.mode !== "subagent" && agent.hidden !== true) return agent
           const visible = Object.values(agents).find((a) => a.mode !== "subagent" && a.hidden !== true)
           if (!visible) throw new Error("no primary visible agent found")
           return visible

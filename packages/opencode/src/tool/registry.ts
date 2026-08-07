@@ -307,11 +307,14 @@ const layer = Layer.effect(
       return (yield* all()).map((tool) => tool.id)
     })
 
-    const describeTask = Effect.fn("ToolRegistry.describeTask")(function* (agent: Agent.Info) {
+    // kilocode_change - shared by describeTask and the task tool visibility filter
+    const availableSubagents = Effect.fn("ToolRegistry.availableSubagents")(function* (agent: Agent.Info) {
       const items = (yield* agents.list()).filter((item) => item.mode !== "primary")
-      const filtered = items.filter(
-        (item) => Permission.evaluate("task", item.name, agent.permission).action !== "deny",
-      )
+      return items.filter((item) => Permission.evaluate("task", item.name, agent.permission).action !== "deny")
+    })
+
+    const describeTask = Effect.fn("ToolRegistry.describeTask")(function* (agent: Agent.Info) {
+      const filtered = yield* availableSubagents(agent)
       const list = filtered.toSorted((a, b) => a.name.localeCompare(b.name))
       const description = list
         .map(
@@ -338,8 +341,12 @@ const layer = Layer.effect(
 
     const tools: Interface["tools"] = Effect.fn("ToolRegistry.tools")(function* (input) {
       const cfg = yield* config.get() // kilocode_change
+      // kilocode_change - never advertise task when every subagent is removed or
+      // denied; the model would only ever get "Unknown agent type" back.
+      const hasSubagents = (yield* availableSubagents(input.agent)).length > 0
       const filtered = (yield* all()).filter((tool) => {
         if (!KiloToolRegistry.available(tool, input.agent)) return false // kilocode_change
+        if (tool.id === TaskTool.id) return hasSubagents // kilocode_change
         if (tool.id === WebSearchTool.id) {
           if (cfg.web_search === true) return true // kilocode_change
           return webSearchEnabled(input.providerID, { exa: flags.enableExa, parallel: flags.enableParallel })

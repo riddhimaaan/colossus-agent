@@ -2,8 +2,8 @@ import { test, expect, describe } from "bun:test"
 import { Permission } from "../../src/permission"
 import { readOnlyBash } from "../../src/kilocode/agent"
 
-/** Build the Ask agent ruleset without MCP servers */
-function askRuleset() {
+/** Build a read-only ruleset over the readOnlyBash table, without MCP servers */
+function readOnlyRuleset() {
   return Permission.fromConfig({
     "*": "deny",
     bash: readOnlyBash,
@@ -23,14 +23,14 @@ function askRuleset() {
   })
 }
 
-/** Build the Ask agent ruleset WITH MCP servers and optional user config */
-function askRulesetWithMcp(servers: string[], user: Permission.Ruleset = []) {
+/** Build the same read-only ruleset WITH MCP servers and optional user config */
+function readOnlyRulesetWithMcp(servers: string[], user: Permission.Ruleset = []) {
   const mcpRules: Record<string, "allow" | "ask" | "deny"> = {}
   for (const key of servers) {
     const sanitized = key.replace(/[^a-zA-Z0-9_-]/g, "_")
     mcpRules[sanitized + "_*"] = "ask"
   }
-  // Mirrors Ask agent merge order: defaults, ask-specific guard, user config, user denies last.
+  // Merge order under test: defaults, read-only guard, user config, user denies last.
   return Permission.merge(
     Permission.fromConfig({
       "*": "deny",
@@ -55,8 +55,8 @@ function askRulesetWithMcp(servers: string[], user: Permission.Ruleset = []) {
   )
 }
 
-describe("Ask agent bash permissions", () => {
-  const ruleset = askRuleset()
+describe("readOnlyBash permissions", () => {
+  const ruleset = readOnlyRuleset()
 
   describe("allowed read-only commands", () => {
     const allowed: [string, string][] = [
@@ -215,8 +215,8 @@ describe("Ask agent bash permissions", () => {
   })
 })
 
-describe("Ask agent tool disabled checks", () => {
-  const ruleset = askRuleset()
+describe("readOnlyBash tool disabled checks", () => {
+  const ruleset = readOnlyRuleset()
 
   test("bash tool is NOT disabled (has specific allow rules after deny)", () => {
     const result = Permission.disabled(["bash"], ruleset)
@@ -251,35 +251,35 @@ describe("Ask agent tool disabled checks", () => {
   })
 })
 
-describe("Ask agent MCP permissions", () => {
+describe("readOnlyBash MCP permissions", () => {
   test("MCP tools not disabled when servers configured", () => {
-    const ruleset = askRulesetWithMcp(["my-server", "another_server"])
+    const ruleset = readOnlyRulesetWithMcp(["my-server", "another_server"])
     const result = Permission.disabled(["my-server_sometool", "another_server_listthing"], ruleset)
     expect(result.has("my-server_sometool")).toBe(false)
     expect(result.has("another_server_listthing")).toBe(false)
   })
 
   test("MCP tools evaluate to ask", () => {
-    const ruleset = askRulesetWithMcp(["my-server"])
+    const ruleset = readOnlyRulesetWithMcp(["my-server"])
     const result = Permission.evaluate("my-server_read_file", "*", ruleset)
     expect(result.action).toBe("ask")
   })
 
   test("user config allow overrides MCP ask rules", () => {
     const allow = Permission.fromConfig({ "my-server_read_file": "allow" })
-    const ruleset = askRulesetWithMcp(["my-server"], allow)
+    const ruleset = readOnlyRulesetWithMcp(["my-server"], allow)
     const result = Permission.evaluate("my-server_read_file", "*", ruleset)
     expect(result.action).toBe("allow")
   })
 
   test("MCP tools disabled without server config", () => {
-    const ruleset = askRuleset()
+    const ruleset = readOnlyRuleset()
     const result = Permission.disabled(["my-server_sometool"], ruleset)
     expect(result.has("my-server_sometool")).toBe(true)
   })
 
   test("server names with special characters are sanitized", () => {
-    const ruleset = askRulesetWithMcp(["my.special server!"])
+    const ruleset = readOnlyRulesetWithMcp(["my.special server!"])
     // "my.special server!" → "my_special_server_"
     const result = Permission.disabled(["my_special_server__sometool"], ruleset)
     expect(result.has("my_special_server__sometool")).toBe(false)
@@ -289,7 +289,7 @@ describe("Ask agent MCP permissions", () => {
   })
 
   test("MCP rules don't interfere with built-in tool permissions", () => {
-    const ruleset = askRulesetWithMcp(["server1"])
+    const ruleset = readOnlyRulesetWithMcp(["server1"])
     // Built-in tools should still work normally
     expect(Permission.evaluate("read", "src/index.ts", ruleset).action).toBe("allow")
     expect(Permission.evaluate("bash", "ls -la", ruleset).action).toBe("allow")
@@ -303,7 +303,7 @@ describe("Ask agent MCP permissions", () => {
 
   test("user config deny overrides MCP ask rules", () => {
     const deny = Permission.fromConfig({ "my-server_*": "deny" })
-    const ruleset = askRulesetWithMcp(["my-server"], deny)
+    const ruleset = readOnlyRulesetWithMcp(["my-server"], deny)
     // User explicitly denied this server — should stay denied
     const result = Permission.disabled(["my-server_sometool"], ruleset)
     expect(result.has("my-server_sometool")).toBe(true)

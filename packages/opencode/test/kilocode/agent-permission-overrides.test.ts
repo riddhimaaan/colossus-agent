@@ -17,6 +17,13 @@ function load<A>(dir: string, fn: (svc: Agent.Interface) => Effect.Effect<A>) {
 }
 
 async function get(config: Partial<ConfigV1.Info>, name = "plan") {
+  // kilocode_change - the native plan agent is removed, but hardenPlan still
+  // applies to a plan/architect agent the user defines, which is what these
+  // tests exercise. Ensure one exists without disturbing per-test overrides.
+  if (name === "plan") {
+    const agent = (config.agent ?? {}) as Record<string, unknown>
+    config = { ...config, agent: { ...agent, plan: { ...((agent.plan as object) ?? {}) } } }
+  }
   await using tmp = await tmpdir({ config })
   const item = await provideTestInstance({
     directory: tmp.path,
@@ -35,7 +42,10 @@ afterEach(async () => {
   await disposeAllInstances()
 })
 
-test("ask agent honors user MCP allow over generated ask rule", async () => {
+// kilocode_change - retargeted from the removed "ask" agent to the single
+// primary agent; the rule under test (user MCP allow beats the generated ask
+// rule) is unchanged.
+test("primary agent honors user MCP allow over generated ask rule", async () => {
   await using tmp = await tmpdir({
     config: {
       mcp: {
@@ -50,9 +60,9 @@ test("ask agent honors user MCP allow over generated ask rule", async () => {
   await provideTestInstance({
     directory: tmp.path,
     fn: async () => {
-      const ask = await load(tmp.path, (svc) => svc.get("ask"))
-      expect(ask).toBeDefined()
-      expect(Permission.evaluate("context7_query-docs", "*", ask!.permission).action).toBe("allow")
+      const primary = await load(tmp.path, (svc) => svc.get("agent"))
+      expect(primary).toBeDefined()
+      expect(Permission.evaluate("context7_query-docs", "*", primary!.permission).action).toBe("allow")
     },
   })
 })
@@ -63,6 +73,7 @@ test("plan agent honors user bash allow over read-only deny default", async () =
       permission: {
         bash: { "cargo search *": "allow" },
       },
+      agent: { plan: {} },
     },
   })
 
@@ -82,6 +93,7 @@ test("plan agent still hard-denies non-plan edits after user edit allow", async 
       permission: {
         edit: { "src/output.log": "allow" },
       },
+      agent: { plan: {} },
     },
   })
 
@@ -206,18 +218,10 @@ test("plan agent preserves global edit denies after per-agent edit ask", async (
   expect(Permission.evaluate("edit", ".kilo/plans/private.md", plan!.permission).action).toBe("deny")
 })
 
-test("plan agent preserves global non-edit denies before broader allows", async () => {
-  const plan = await get({
-    permission: {
-      bash: {
-        "rm *": "deny",
-        "*": "allow",
-      },
-    },
-  })
-  expect(Permission.evaluate("bash", "rm -rf x", plan!.permission).action).toBe("deny")
-  expect(Permission.evaluate("bash", "ls", plan!.permission).action).toBe("allow")
-})
+// kilocode_change - removed "plan agent preserves global non-edit denies before
+// broader allows". It covered the deny-reordering that restrictions() applied
+// inside the native plan agent's guard; both were deleted with that agent, so a
+// user-defined plan agent now follows ordinary merge order.
 
 test("plan agent preserves per-agent tool allows with a wildcard deny", async () => {
   const plan = await get(

@@ -17,8 +17,6 @@ import { KiloSessionPromptQueue } from "@/kilocode/session/prompt-queue"
 import { Permission } from "@/permission"
 import { PermissionProvenance } from "@/kilocode/permission/provenance"
 import { Question } from "@/question"
-import { environmentDetails } from "@/kilocode/editor-context"
-import { Identifier } from "@/id/id"
 import { Filesystem } from "@/util/filesystem"
 import NATIVE_PLAN_PROMPT from "@/kilocode/session/native-plan-prompt.txt"
 import { KiloMemory } from "@kilocode/kilo-memory/effect"
@@ -356,9 +354,8 @@ export namespace KiloSessionPrompt {
   }
 
   /**
-   * Ephemerally injects dynamic editor context (visible files, open tabs, etc.)
-   * into the last user message. Caches the result per user message ID so repeated
-   * loop iterations produce byte-identical messages (prompt caching).
+   * Colossus deliberately leaves user messages untouched. Dynamic machine
+   * context belongs in the system layer, never appended to the user's words.
    */
   export function injectEditorContext(input: {
     msgs: MessageV2.WithParts[]
@@ -366,37 +363,7 @@ export namespace KiloSessionPrompt {
     sessionID: SessionID
     cache: EnvCache
   }) {
-    if (input.cache.user !== input.lastUser.id) {
-      const ctx = (() => {
-        try {
-          return Instance.current
-        } catch {
-          return undefined
-        }
-      })()
-      input.cache.block = environmentDetails({
-        ...input.lastUser.editorContext,
-        ...(ctx ? { directory: ctx.directory, worktree: ctx.worktree } : {}),
-      })
-      input.cache.user = input.lastUser.id
-    }
-    if (!input.cache.block) return
-    const idx = input.msgs.findLastIndex((m) => m.info.role === "user")
-    if (idx === -1) return
-    input.msgs[idx] = {
-      ...input.msgs[idx],
-      parts: [
-        ...input.msgs[idx].parts,
-        {
-          id: PartID.make(Identifier.ascending("part")),
-          sessionID: input.sessionID,
-          messageID: input.msgs[idx].info.id,
-          type: "text",
-          text: input.cache.block,
-          synthetic: true,
-        } satisfies MessageV2.TextPart,
-      ],
-    }
+    void input
   }
 
   /**

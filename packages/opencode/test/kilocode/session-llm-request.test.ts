@@ -12,6 +12,7 @@ import type { Provider } from "@/provider/provider"
 import { LLMRequestPrep } from "@/session/llm/request"
 import { MessageID, SessionID } from "@/session/schema"
 import { SystemPrompt } from "@/session/system"
+import { KiloSessionPrompt } from "@/kilocode/session/prompt"
 
 const model: Provider.Model = {
   id: ModelV2.ID.make("test-model"),
@@ -100,7 +101,7 @@ async function prepare(name: string, oauth = false) {
   )
 }
 
-describe("Kilo persona in generated metadata requests", () => {
+describe("Colossus core prompt in generated metadata requests", () => {
   test.each(["title", "branch-name"])("omits the persona for %s generation", async (name) => {
     const result = await prepare(name)
 
@@ -117,11 +118,26 @@ describe("Kilo persona in generated metadata requests", () => {
     expect(result.params.options.instructions).not.toContain(SystemPrompt.soul())
   })
 
-  test("keeps the persona for ordinary agent requests", async () => {
-    const result = await prepare("code")
-    const oauth = await prepare("code", true)
+  test("keeps the transparent core prompt for ordinary agent requests", async () => {
+    const result = await prepare("agent")
+    const oauth = await prepare("agent", true)
 
     expect(result.system[0]).toContain(SystemPrompt.soul())
     expect(oauth.params.options.instructions).toContain(SystemPrompt.soul())
+    expect(result.system[0]).not.toContain("software engineering tasks")
+    expect(SystemPrompt.provider(model)).toEqual([])
+  })
+
+  test("does not append environment metadata to a user message", () => {
+    const messages = [{ info: { id: "msg_test", role: "user" }, parts: [{ type: "text", text: "Hello" }] }] as any
+
+    KiloSessionPrompt.injectEditorContext({
+      msgs: messages,
+      lastUser: { id: "msg_test", editorContext: { directory: "/private/workspace" } } as any,
+      sessionID: "ses_test" as any,
+      cache: {} as any,
+    })
+
+    expect(messages[0].parts).toEqual([{ type: "text", text: "Hello" }])
   })
 })

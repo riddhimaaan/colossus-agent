@@ -4,71 +4,54 @@ import { Effect, Layer } from "effect"
 import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
 import path from "path"
 import { Skill } from "../../src/skill"
-import * as KiloSkill from "../../src/kilocode/skill-remove"
 import { BUILTIN_SKILLS } from "../../src/kilocode/skills/builtin"
 import { TestInstance } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"
 
 const it = testEffect(Layer.mergeAll(AppNodeBuilder.build(Skill.node), AppNodeBuilder.build(CrossSpawnSpawner.node)))
 
+// Colossus ships no built-in skills: kilo-config documented Kilo's coding
+// configuration surface, which the fork does not present to the user. All
+// skills now come from the profile or the workspace, so the user can read
+// every instruction the agent can load.
 it.instance(
-  "built-in skills are present in empty project",
+  "no skills are bundled into the binary",
   () =>
     Effect.gen(function* () {
+      expect(BUILTIN_SKILLS).toEqual([])
       const skill = yield* Skill.Service
       const skills = yield* skill.all()
-      for (const builtin of BUILTIN_SKILLS) {
-        const found = skills.find((s) => s.name === builtin.name)
-        expect(found).toBeDefined()
-        expect(found!.location).toBe(Skill.BUILTIN_LOCATION)
-        expect(found!.description).toBe(builtin.description)
-        expect(found!.content.length).toBeGreaterThan(0)
-      }
+      expect(skills.filter((s) => s.location === Skill.BUILTIN_LOCATION)).toEqual([])
     }),
   { git: true },
 )
 
 it.instance(
-  "built-in skill has correct metadata",
+  "an empty project discovers no skills at all",
   () =>
     Effect.gen(function* () {
       const skill = yield* Skill.Service
-      const item = yield* skill.get("kilo-config")
-      expect(item).toBeDefined()
-      expect(item!.name).toBe("kilo-config")
-      expect(item!.location).toBe(Skill.BUILTIN_LOCATION)
-      expect(item!.content).toContain("kilo")
+      expect(yield* skill.all()).toEqual([])
+      expect(yield* skill.get("kilo-config")).toBeUndefined()
     }),
   { git: true },
 )
 
 it.instance(
-  "kilo-config is protected from removal",
-  () =>
-    Effect.gen(function* () {
-      const skill = yield* Skill.Service
-      const item = yield* skill.get("kilo-config")
-      expect(item).toBeDefined()
-      expect(KiloSkill.builtin(item!.location)).toBe(true)
-    }),
-  { git: true },
-)
-
-it.instance(
-  "user skill overrides built-in with same name",
+  "a workspace skill is discovered and is not marked built-in",
   () =>
     Effect.gen(function* () {
       const instance = yield* TestInstance
-      const dir = path.join(instance.directory, ".kilo", "skill", "kilo-config")
+      const dir = path.join(instance.directory, ".kilo", "skill", "storyboard")
       yield* Effect.promise(() =>
         Bun.write(
           path.join(dir, "SKILL.md"),
           `---
-name: kilo-config
-description: User override of kilo-config.
+name: storyboard
+description: Draft a storyboard from a rough outline.
 ---
 
-# Custom kilo-config
+# Storyboard
 
 User-provided content.
 `,
@@ -76,11 +59,11 @@ User-provided content.
       )
 
       const skill = yield* Skill.Service
-      const item = yield* skill.get("kilo-config")
+      const item = yield* skill.get("storyboard")
       expect(item).toBeDefined()
-      expect(item!.description).toBe("User override of kilo-config.")
+      expect(item!.description).toBe("Draft a storyboard from a rough outline.")
       expect(item!.location).not.toBe(Skill.BUILTIN_LOCATION)
-      expect(item!.location).toContain(path.join("skill", "kilo-config", "SKILL.md"))
+      expect(item!.location).toContain(path.join("skill", "storyboard", "SKILL.md"))
     }),
   { git: true },
 )

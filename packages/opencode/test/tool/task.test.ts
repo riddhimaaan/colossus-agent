@@ -58,6 +58,12 @@ const layer = (flags: Partial<RuntimeFlags.Info> = {}) =>
     [[RuntimeFlags.node, RuntimeFlags.layer(flags)]],
   )
 
+// kilocode_change - the native "general" subagent is removed, so the delegation
+// tests declare one with the same name to target.
+const GENERAL = {
+  config: { agent: { general: { description: "General subagent", mode: "subagent" as const } } },
+}
+
 const it = testEffect(layer())
 const background = testEffect(layer({ experimentalBackgroundSubagents: true }))
 
@@ -170,18 +176,19 @@ describe("tool.task", () => {
         expect(first).toBe(second)
 
         const alpha = first.indexOf("- alpha: Alpha agent")
-        const explore = first.indexOf("- explore:")
+        // kilocode_change - "explore" is removed; alpha < general < zebra still
+        // proves the ordering is alphabetical and stable.
         const general = first.indexOf("- general:")
         const zebra = first.indexOf("- zebra: Zebra agent")
 
         expect(alpha).toBeGreaterThan(-1)
-        expect(explore).toBeGreaterThan(alpha)
-        expect(general).toBeGreaterThan(explore)
+        expect(general).toBeGreaterThan(alpha)
         expect(zebra).toBeGreaterThan(general)
       }),
     {
       config: {
         agent: {
+          general: { description: "General subagent", mode: "subagent" as const },
           zebra: {
             description: "Zebra agent",
             mode: "subagent",
@@ -217,6 +224,7 @@ describe("tool.task", () => {
           },
         },
         agent: {
+          general: { description: "General subagent", mode: "subagent" as const },
           zebra: {
             description: "Zebra agent",
             mode: "subagent",
@@ -267,6 +275,7 @@ describe("tool.task", () => {
       expect(seen?.sessionID).toBe(child.id)
       expect(seen?.variant).toBe("xhigh")
     }),
+    GENERAL,
   )
 
   // kilocode_change start - verify forked task children remain resumable
@@ -329,6 +338,7 @@ describe("tool.task", () => {
       expect(seen?.sessionID).toBe(SessionID.descending(id))
       expect((yield* sessions.get(SessionID.descending(id))).parentID).toBe(forked.id)
     }),
+    GENERAL,
   )
   // kilocode_change end
 
@@ -365,6 +375,7 @@ describe("tool.task", () => {
       expect(KiloSession.resolvePlatform(child.id)).toBe("agent-manager")
       expect(KiloSession.resolveRoot(child.id)).toBe(chat.id)
     }),
+    GENERAL,
   )
   // kilocode_change end
 
@@ -412,6 +423,7 @@ describe("tool.task", () => {
         },
       })
     }),
+    GENERAL,
   )
 
   it.instance("execute cancels child session when abort signal fires", () =>
@@ -462,6 +474,7 @@ describe("tool.task", () => {
       const exit = yield* Fiber.await(fiber)
       expect(Exit.isSuccess(exit)).toBe(true)
     }),
+    GENERAL,
   )
 
   it.instance("execute creates a child when task_id does not exist", () =>
@@ -499,6 +512,7 @@ describe("tool.task", () => {
       expect(result.output).toContain(`<task id="${result.metadata.sessionId}" state="completed">`)
       expect(seen?.sessionID).toBe(result.metadata.sessionId)
     }),
+    GENERAL,
   )
 
   it.instance(
@@ -571,6 +585,7 @@ describe("tool.task", () => {
     {
       config: {
         agent: {
+          general: { description: "General subagent", mode: "subagent" as const },
           reviewer: {
             mode: "subagent",
             permission: {
@@ -642,6 +657,7 @@ describe("tool.task", () => {
       expect(message).toContain(`task_id="${childId}"`)
       expect(message).toContain("can be resumed")
     }),
+    GENERAL,
   )
   // kilocode_change end
 
@@ -699,6 +715,7 @@ describe("tool.task", () => {
       expect(text).toContain(`task_id="${childId}"`)
       expect(text).toContain("can be resumed")
     }),
+    GENERAL,
   )
   // kilocode_change end
   it.instance("rejects background execution when the experiment is disabled", () =>
@@ -730,6 +747,7 @@ describe("tool.task", () => {
 
       expect(Exit.isFailure(exit)).toBe(true)
     }),
+    GENERAL,
   )
 
   it.instance("promotes a running foreground task without restarting it", () =>
@@ -796,6 +814,7 @@ describe("tool.task", () => {
       expect((yield* Deferred.await(injected)).parts[0]?.type).toBe("text")
       expect(runs).toBe(1)
     }),
+    GENERAL,
   )
 
   background.instance("execute launches background tasks without waiting for completion", () =>
@@ -834,6 +853,7 @@ describe("tool.task", () => {
       expect(result.output).toContain(`state="running"`)
       expect(job?.status).toBe("running")
     }),
+    GENERAL,
   )
 
   background.instance("background task completion waits for running updates", () =>
@@ -908,6 +928,7 @@ describe("tool.task", () => {
       expect(notification.parts[0]?.type).toBe("text")
       if (notification.parts[0]?.type === "text") expect(notification.parts[0].text).toContain("second done")
     }),
+    GENERAL,
   )
 
   // kilocode_change start - completed background tasks propagate their invocation cost delta
@@ -942,6 +963,7 @@ describe("tool.task", () => {
       const parent = (yield* sessions.messages({ sessionID: chat.id })).find((item) => item.info.id === assistant.id)!
       expect(parent.info.role === "assistant" ? parent.info.cost : 0).toBeCloseTo(0.2, 6)
     }),
+    GENERAL,
   )
   // kilocode_change end
 
@@ -1012,6 +1034,7 @@ describe("tool.task", () => {
       // extend path would leave the parent at 0.2.
       expect(parent.info.role === "assistant" ? parent.info.cost : 0).toBeCloseTo(0.4, 6)
     }),
+    GENERAL,
   )
   // kilocode_change end
 
@@ -1046,6 +1069,7 @@ describe("tool.task", () => {
       expect(waited.info?.status).toBe("completed")
       expect(waited.info?.output).toBe("background done")
     }),
+    GENERAL,
   )
 
   background.instance("background task completion does not wait for the parent async prompt", () =>
@@ -1084,6 +1108,7 @@ describe("tool.task", () => {
       expect(waited.timedOut).toBe(false)
       expect(waited.info?.status).toBe("completed")
     }),
+    GENERAL,
   )
 
   background.instance("removing the parent session cancels running background tasks", () =>
@@ -1123,6 +1148,7 @@ describe("tool.task", () => {
       expect(waited.timedOut).toBe(false)
       expect(waited.info?.status).toBe("cancelled")
     }),
+    GENERAL,
   )
 
   background.instance("removing the child task session cancels its running background task", () =>
@@ -1162,6 +1188,7 @@ describe("tool.task", () => {
       expect(waited.timedOut).toBe(false)
       expect(waited.info?.status).toBe("cancelled")
     }),
+    GENERAL,
   )
 
   background.instance("cancelling the parent run cancels running background tasks", () =>
@@ -1201,6 +1228,7 @@ describe("tool.task", () => {
       expect(waited.timedOut).toBe(false)
       expect(waited.info?.status).toBe("cancelled")
     }),
+    GENERAL,
   )
 
   it.instance("cancelling a child run cancels its own pre-runner task job", () =>
@@ -1222,6 +1250,7 @@ describe("tool.task", () => {
 
       expect((yield* jobs.get(child.id))?.status).toBe("cancelled")
     }),
+    GENERAL,
   )
 
   it.instance("cancelling a parent run recursively cancels descendant background tasks", () =>
@@ -1251,6 +1280,7 @@ describe("tool.task", () => {
       expect((yield* jobs.get(child.id))?.status).toBe("cancelled")
       expect((yield* jobs.get(grandchild.id))?.status).toBe("cancelled")
     }),
+    GENERAL,
   )
 })
 
@@ -1293,6 +1323,7 @@ describe("tool.task cost propagation", () => {
         if (parent.info.role !== "assistant") return
         expect(parent.info.cost).toBeCloseTo(0.25, 6)
       }),
+      GENERAL,
     ),
   )
 
@@ -1348,6 +1379,7 @@ describe("tool.task cost propagation", () => {
         // Child session keeps the full cumulative total (0.4 pre-existing + 0.15 this run).
         expect(yield* assistantCost(child.id)).toBeCloseTo(0.55, 6)
       }),
+      GENERAL,
     ),
   )
 
@@ -1399,6 +1431,7 @@ describe("tool.task cost propagation", () => {
         // Delta-only: only the 0.05 from this run, not 0.15 including the pre-existing 0.10.
         expect(parent.info.cost).toBeCloseTo(0.05, 6)
       }),
+      GENERAL,
     ),
   )
 
@@ -1460,6 +1493,7 @@ describe("tool.task cost propagation", () => {
         if (parent.info.role !== "assistant") return
         expect(parent.info.cost).toBeCloseTo(0.07, 6)
       }),
+      GENERAL,
     ),
   )
 })

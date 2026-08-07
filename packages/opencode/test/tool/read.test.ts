@@ -270,9 +270,8 @@ describe("tool.read env file permissions", () => {
     ["environment.ts", false],
   ]
 
-  // kilocode_change start - renamed from "build" to "code"
-  for (const agentName of ["code", "plan"] as const) {
-    // kilocode_change end
+  // kilocode_change - the plan agent is removed; "agent" is the single primary.
+  for (const agentName of ["agent"] as const) {
     describe(`agent=${agentName}`, () => {
       for (const [filename, shouldAsk] of cases) {
         it.live(`${filename} asks=${shouldAsk}`, () =>
