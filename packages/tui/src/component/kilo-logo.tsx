@@ -10,13 +10,20 @@ import { tui } from "@/kilocode/cli/logo"
 // ~ = shadow top only (▀ with fg=shadow)
 const SHADOW_MARKER = /[_^~]/
 
+// kilocode_change - bronze ramp, brightest at the top so the wordmark reads as
+// lit from above. The Colossus of Rhodes was cast in bronze; the shadow row
+// under the letters continues the darkest step.
+const BRONZE = ["#FFD9A0", "#F0A94B", "#D4762A", "#A85320", "#7A3A16"]
+
 export function KiloLogo() {
   const { theme } = useTheme()
-  const yellow = RGBA.fromHex("#F8F675")
   const logo = tui()
 
-  const renderLine = (line: string): JSX.Element[] => {
-    const shadow = tint(theme.background, yellow, 0.25)
+  const renderLine = (line: string, row: number): JSX.Element[] => {
+    // The shadow row sits past the end of the ramp; clamp it to the base tone.
+    const letter = RGBA.fromHex(BRONZE[Math.min(row, BRONZE.length - 1)])
+    const yellow = letter
+    const shadow = tint(theme.background, RGBA.fromHex(BRONZE[BRONZE.length - 1]), 0.35)
     const elements: JSX.Element[] = []
     let i = 0
 
@@ -74,7 +81,7 @@ export function KiloLogo() {
 
   return (
     <box>
-      <For each={logo}>{(line) => <box flexDirection="row">{renderLine(line)}</box>}</For>
+      <For each={logo}>{(line, row) => <box flexDirection="row">{renderLine(line, row())}</box>}</For>
     </box>
   )
 }

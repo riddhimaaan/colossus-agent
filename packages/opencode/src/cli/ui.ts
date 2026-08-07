@@ -56,6 +56,19 @@ export function logo(pad?: string) {
 
   const result: string[] = []
   const reset = "\x1b[0m"
+  // kilocode_change - bronze ramp, brightest at the top so the wordmark reads as
+  // lit from above. Truecolor with a 256-colour fallback for terminals that
+  // advertise no 24-bit support.
+  const truecolor = process.env["COLORTERM"] === "truecolor" || process.env["COLORTERM"] === "24bit"
+  const BRONZE = truecolor
+    ? [
+        "\x1b[38;2;255;217;160m",
+        "\x1b[38;2;240;169;75m",
+        "\x1b[38;2;212;118;42m",
+        "\x1b[38;2;168;83;32m",
+        "\x1b[38;2;122;58;22m",
+      ]
+    : ["\x1b[38;5;223m", "\x1b[38;5;215m", "\x1b[38;5;173m", "\x1b[38;5;130m", "\x1b[38;5;94m"]
   const left = {
     fg: "\x1b[90m",
     shadow: "\x1b[38;5;235m",
@@ -63,8 +76,8 @@ export function logo(pad?: string) {
   }
   const right = {
     fg: reset,
-    shadow: "\x1b[38;5;238m",
-    bg: "\x1b[48;5;238m",
+    shadow: truecolor ? "\x1b[38;2;90;44;18m" : "\x1b[38;5;58m",
+    bg: truecolor ? "\x1b[48;2;90;44;18m" : "\x1b[48;5;58m",
   }
   const gap = " "
   const draw = (line: string, fg: string, shadow: string, bg: string) => {
@@ -95,7 +108,9 @@ export function logo(pad?: string) {
     result.push(draw(row, left.fg, left.shadow, left.bg))
     result.push(gap)
     const other = glyphs.right[index] ?? ""
-    result.push(draw(other, right.fg, right.shadow, right.bg))
+    // kilocode_change - step down the bronze ramp per row
+    const tone = BRONZE[Math.min(index, BRONZE.length - 1)]
+    result.push(draw(other, tone, right.shadow, right.bg))
     result.push(EOL)
   })
   return result.join("").trimEnd()
