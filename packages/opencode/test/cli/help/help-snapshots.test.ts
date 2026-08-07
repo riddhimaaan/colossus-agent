@@ -30,7 +30,7 @@ import { normalizeForSnapshot, PATH_SEP } from "../../lib/snapshot"
 //      line-wraps onto a fresh line on Windows). `\s+` matches both forms.
 function normalize(text: string): string {
   // kilocode_change start - snapshot Kilo help independently of lifecycle logs
-  const help = text.slice(text.indexOf("kilo "))
+  const help = text.slice(text.indexOf("colossus "))
   const output = help
     .replace(/(?=INFO  \d{4}-\d{2}-\d{2}).*$/s, "")
     .replace(/ {4}(?=\[aliases: ls\])/g, "")
@@ -104,7 +104,7 @@ const SUBCOMMANDS = [
 const SNAPSHOT_ENV = { COLUMNS: "120" }
 
 // kilocode_change start - name snapshots after the shipped CLI
-describe("Kilo CLI help-text snapshots", () => {
+describe("Colossus CLI help-text snapshots", () => {
   // kilocode_change end
   // Single test, parallel spawns. Each command's help fires under
   // `concurrency: 8` — wall-clock stays under ~10s even for ~35 commands,
@@ -133,7 +133,7 @@ describe("Kilo CLI help-text snapshots", () => {
             Effect.gen(function* () {
               const result = yield* opencode.spawn([...argv, "--help"], { env: SNAPSHOT_ENV })
               if (result.exitCode !== 0) {
-                return yield* Effect.fail(`kilo ${argv.join(" ")}: exit ${result.exitCode}`) // kilocode_change
+                return yield* Effect.fail(`colossus ${argv.join(" ")}: exit ${result.exitCode}`) // kilocode_change
               }
               return { argv, result }
             }),
@@ -144,7 +144,7 @@ describe("Kilo CLI help-text snapshots", () => {
           // yargs writes --help to stderr, not stdout. Snapshotting stderr
           // means our test catches the help body; stdout for these commands
           // is expected to be empty.
-          expect(normalize(result.stderr)).toMatchSnapshot(`kilo ${argv.join(" ")} --help`) // kilocode_change
+          expect(normalize(result.stderr)).toMatchSnapshot(`colossus ${argv.join(" ")} --help`) // kilocode_change
         }
         if (failures.length > 0) {
           throw new Error(`Help text failed for:\n  ${failures.join("\n  ")}`)

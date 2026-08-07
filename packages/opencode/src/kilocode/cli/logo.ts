@@ -2,34 +2,39 @@
 const yes = new Set(["1", "true", "yes", "on"])
 const no = new Set(["0", "false", "no", "off"])
 
+// kilocode_change - Colossus wordmark.
+//
+// `~` is a shadow marker, not a literal tilde: both the TUI logo component and
+// the CLI's UI.logo() translate it to a dimmed ▀, which is what gives the
+// wordmark its drop shadow. `_` and `^` are the other two markers.
+//
+// The letterforms use only █ and ▀ (CP437-compatible), so unlike the KILOCODE
+// art this needs no reduced fallback — the sextant glyphs old Windows console,
+// ConEmu, and ANSICON cannot render are gone. supports() still drives the exit
+// banner and stays exported for callers that check terminal capability.
+const WORDMARK = [
+  ` ████   ████  ██      ████   █████  █████ ██  ██  █████`,
+  `██     ██  ██ ██     ██  ██ ██     ██     ██  ██ ██`,
+  `██     ██  ██ ██     ██  ██  ████   ████  ██  ██  ████`,
+  `██     ██  ██ ██     ██  ██     ██     ██ ██  ██     ██`,
+  ` ████   ████  ██████  ████  █████  █████   ████  █████`,
+]
+
+const SHADOW = ` ~~~~   ~~~~  ~~~~~~  ~~~~  ~~~~~  ~~~~~   ~~~~  ~~~~~`
+
+// COLO, for the narrower exit banner printed beside the session title.
+const SHORT = [`████ ████ ██   ████ `, `██   █  █ ██   █  █ `, `████ ████ ████ ████ `]
+
 const modern = {
-  tui: [
-    `██  ██ ██🬺🬏   ██  ██   ██🬺🬏     ████ ██     ██🬺🬏   `,
-    `████🬺🬏 ~~██   ██  ~~ ██~~██   ██~~~~ ██     ~~██   `,
-    `██  ██ ██████ 🬁🬬████ 🬁🬬██~~   🬁🬬████ 🬁🬬████ ██████ `,
-    `~~  ~~ ~~~~~~   ~~~~   ~~       ~~~~   ~~~~ ~~~~~~ `,
-  ],
-  plain: [
-    `██  ██ ██🬺🬏   ██  ██   ██🬺🬏     ████ ██     ██🬺🬏   `,
-    `████🬺🬏   ██   ██     ██  ██   ██     ██       ██   `,
-    `██  ██ ██████ 🬁🬬████ 🬁🬬██     🬁🬬████ 🬁🬬████ ██████ `,
-  ],
-  exit: [`  ██  ██ ██🬺🬏   ██  ██   ██🬺🬏  `, `  ████🬺🬏   ██   ██     ██  ██  `, `  ██  ██ ██████ 🬁🬬████ 🬁🬬██    `],
+  tui: [...WORDMARK, SHADOW],
+  plain: WORDMARK,
+  exit: SHORT,
 }
 
 const fallback = {
-  tui: [
-    `██  ██ ████   ██  ██   ██       ████ ██     ████   `,
-    `████   ~~██   ██  ~~ ██~~██   ██~~~~ ██     ~~██   `,
-    `██  ██ ██████ ██████   ██~~     ████   ████ ██████ `,
-    `~~  ~~ ~~~~~~  ~~~~~   ~~       ~~~~   ~~~~ ~~~~~~ `,
-  ],
-  plain: [
-    `██  ██ ████   ██  ██   ███      ████ ██     ████   `,
-    `████     ██   ██     ██  ██   ██     ██       ██   `,
-    `██  ██ ██████ ██████   ██       ████ ██████ ██████ `,
-  ],
-  exit: [`  ██  ██ ████   ██  ██   ██    `, `  ████     ██   ██     ██  ██  `, `  ██  ██ ██████ ██████   ██    `],
+  tui: [...WORDMARK, SHADOW],
+  plain: WORDMARK,
+  exit: SHORT,
 }
 
 function flag(value: string | undefined) {
@@ -75,5 +80,5 @@ export function session(
   platform = process.platform,
 ) {
   const logo = supports(env, platform) ? modern.exit : fallback.exit
-  return [``, `${logo[0]}${dim}${title}${normal}`, `${logo[1]}${dim}kilo -s ${id}${normal}`, logo[2]].join("\n")
+  return [``, `${logo[0]}${dim}${title}${normal}`, `${logo[1]}${dim}colossus -s ${id}${normal}`, logo[2]].join("\n")
 }

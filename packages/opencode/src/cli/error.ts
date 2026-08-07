@@ -65,7 +65,7 @@ export function FormatError(input: unknown): string | undefined {
       `Model not found: ${stringField(providerModelNotFound, "providerID")}/${stringField(providerModelNotFound, "modelID")}`,
       ...(suggestions.length ? ["Did you mean: " + suggestions.join(", ")] : []),
       ...(providerModelNotFound.modelsEmpty === true ? ["No models are currently available."] : []), // kilocode_change
-      `Try: \`kilo models\` to list available models`, // kilocode_change
+      `Try: \`colossus models\` to list available models`, // kilocode_change
       `Or check your kilo.json provider/model names`, // kilocode_change
     ].join("\n")
   }
@@ -103,7 +103,7 @@ export function FormatError(input: unknown): string | undefined {
     return [
       `Failed to load remote config${remote ? ` from ${remote}` : ""}: the server returned a login page instead of JSON.`,
       `Authentication is missing or has expired (the endpoint is likely behind an SSO or identity-aware proxy).`,
-      ...(url ? [`Run \`kilo auth login ${url}\` to re-authenticate.`] : []), // kilocode_change
+      ...(url ? [`Run \`colossus auth login ${url}\` to re-authenticate.`] : []), // kilocode_change
     ].join("\n")
   }
 

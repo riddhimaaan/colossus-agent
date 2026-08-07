@@ -28,7 +28,7 @@ export const UpgradeCommand = {
     const detectedMethod = await Installation.method()
     const method = (args.method as Installation.Method) ?? detectedMethod
     if (method === "unknown") {
-      prompts.log.error(`kilo is installed to ${process.execPath} and may be managed by a package manager`) // kilocode_change
+      prompts.log.error(`colossus is installed to ${process.execPath} and may be managed by a package manager`) // kilocode_change
       const install = await prompts.select({
         message: "Install anyways?",
         options: [

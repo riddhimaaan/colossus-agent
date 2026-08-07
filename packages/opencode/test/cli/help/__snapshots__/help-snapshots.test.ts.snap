@@ -1,7 +1,7 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo acp --help 1`] = `
-"kilo acp
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus acp --help 1`] = `
+"colossus acp
 
 start ACP (Agent Client Protocol) server
 
@@ -22,17 +22,17 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo mcp --help 1`] = `
-"kilo mcp
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus mcp --help 1`] = `
+"colossus mcp
 
 manage MCP (Model Context Protocol) servers
 
 Commands:
-  kilo mcp add [name]     add an MCP server
-  kilo mcp list           list MCP servers and their status                        [aliases: ls]
-  kilo mcp auth [name]    authenticate with an OAuth-enabled MCP server
-  kilo mcp logout [name]  remove OAuth credentials for an MCP server
-  kilo mcp debug <name>   debug OAuth connection for an MCP server
+  colossus mcp add [name]     add an MCP server
+  colossus mcp list           list MCP servers and their status                    [aliases: ls]
+  colossus mcp auth [name]    authenticate with an OAuth-enabled MCP server
+  colossus mcp logout [name]  remove OAuth credentials for an MCP server
+  colossus mcp debug <name>   debug OAuth connection for an MCP server
 
 Options:
   -h, --help        show help                                                              [boolean]
@@ -43,8 +43,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo attach --help 1`] = `
-"kilo attach <url>
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus attach --help 1`] = `
+"colossus attach <url>
 
 attach to a running kilo server
 
@@ -70,8 +70,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo run --help 1`] = `
-"kilo run [message..]
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus run --help 1`] = `
+"colossus run [message..]
 
 run kilo with a message
 
@@ -111,25 +111,25 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo debug --help 1`] = `
-"kilo debug
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus debug --help 1`] = `
+"colossus debug
 
 debugging and troubleshooting tools
 
 Commands:
-  kilo debug config        show resolved configuration
-  kilo debug lsp           LSP debugging utilities
-  kilo debug rg            ripgrep debugging utilities
-  kilo debug file          file system debugging utilities
-  kilo debug scrap         list all known projects
-  kilo debug skill         list all available skills
-  kilo debug snapshot      snapshot debugging utilities
-  kilo debug startup       print startup timing
-  kilo debug agent <name>  show agent configuration details
-  kilo debug v2            debug v2 catalog and built-in plugins
-  kilo debug info          show debug information
-  kilo debug paths         show global paths (data, config, cache, state)
-  kilo debug wait          wait indefinitely (for debugging)
+  colossus debug config        show resolved configuration
+  colossus debug lsp           LSP debugging utilities
+  colossus debug rg            ripgrep debugging utilities
+  colossus debug file          file system debugging utilities
+  colossus debug scrap         list all known projects
+  colossus debug skill         list all available skills
+  colossus debug snapshot      snapshot debugging utilities
+  colossus debug startup       print startup timing
+  colossus debug agent <name>  show agent configuration details
+  colossus debug v2            debug v2 catalog and built-in plugins
+  colossus debug info          show debug information
+  colossus debug paths         show global paths (data, config, cache, state)
+  colossus debug wait          wait indefinitely (for debugging)
 
 Options:
   -h, --help        show help                                                              [boolean]
@@ -140,15 +140,15 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo providers --help 1`] = `
-"kilo auth
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus providers --help 1`] = `
+"colossus auth
 
 manage AI providers and credentials
 
 Commands:
-  kilo providers list               list providers and credentials                 [aliases: ls]
-  kilo providers login [url]        log in to a provider
-  kilo providers logout [provider]  log out from a configured provider
+  colossus providers list               list providers and credentials             [aliases: ls]
+  colossus providers login [url]        log in to a provider
+  colossus providers logout [provider]  log out from a configured provider
 
 Options:
   -h, --help        show help                                                              [boolean]
@@ -159,14 +159,14 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo agent --help 1`] = `
-"kilo agent
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus agent --help 1`] = `
+"colossus agent
 
 manage agents
 
 Commands:
-  kilo agent create  create a new agent
-  kilo agent list    list all available agents
+  colossus agent create  create a new agent
+  colossus agent list    list all available agents
 
 Options:
   -h, --help        show help                                                              [boolean]
@@ -177,8 +177,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo upgrade --help 1`] = `
-"kilo upgrade [target]
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus upgrade --help 1`] = `
+"colossus upgrade [target]
 
 upgrade kilo to the latest or a specific version
 
@@ -196,8 +196,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo uninstall --help 1`] = `
-"kilo uninstall
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus uninstall --help 1`] = `
+"colossus uninstall
 
 uninstall kilo and remove all related files
 
@@ -214,8 +214,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo serve --help 1`] = `
-"kilo serve
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus serve --help 1`] = `
+"colossus serve
 
 starts a headless kilo server
 
@@ -235,8 +235,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo web --help 1`] = `
-"kilo web
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus web --help 1`] = `
+"colossus web
 
 start kilo server and open web interface
 
@@ -256,8 +256,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo models --help 1`] = `
-"kilo models [provider]
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus models --help 1`] = `
+"colossus models [provider]
 
 list all available models
 
@@ -275,8 +275,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo stats --help 1`] = `
-"kilo stats
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus stats --help 1`] = `
+"colossus stats
 
 show token usage and cost statistics
 
@@ -294,8 +294,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo export --help 1`] = `
-"kilo export [sessionID]
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus export --help 1`] = `
+"colossus export [sessionID]
 
 export session data as JSON
 
@@ -312,8 +312,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo import --help 1`] = `
-"kilo import <file>
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus import --help 1`] = `
+"colossus import <file>
 
 import session data from JSON file or URL
 
@@ -329,14 +329,14 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo github --help 1`] = `
-"kilo github
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus github --help 1`] = `
+"colossus github
 
 manage GitHub agent
 
 Commands:
-  kilo github install  install the GitHub agent
-  kilo github run      run the GitHub agent
+  colossus github install  install the GitHub agent
+  colossus github run      run the GitHub agent
 
 Options:
   -h, --help        show help                                                              [boolean]
@@ -347,8 +347,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo pr --help 1`] = `
-"kilo pr <number>
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus pr --help 1`] = `
+"colossus pr <number>
 
 fetch and checkout a GitHub PR branch, then run kilo
 
@@ -364,14 +364,14 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo session --help 1`] = `
-"kilo session
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus session --help 1`] = `
+"colossus session
 
 manage sessions
 
 Commands:
-  kilo session list                list sessions
-  kilo session delete <sessionID>  delete a session
+  colossus session list                list sessions
+  colossus session delete <sessionID>  delete a session
 
 Options:
   -h, --help        show help                                                              [boolean]
@@ -382,8 +382,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo plugin --help 1`] = `
-"kilo plugin <module>
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus plugin --help 1`] = `
+"colossus plugin <module>
 
 install plugin and update config
 
@@ -401,14 +401,14 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo db --help 1`] = `
-"kilo db
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus db --help 1`] = `
+"colossus db
 
 database tools
 
 Commands:
-  kilo db [query]     open an interactive sqlite3 shell or run a query                     [default]
-  kilo db path        print the database path
+  colossus db [query]     open an interactive sqlite3 shell or run a query                 [default]
+  colossus db path        print the database path
 
 Positionals:
   query  SQL query to execute                                                               [string]
@@ -423,8 +423,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo mcp list --help 1`] = `
-"kilo mcp list
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus mcp list --help 1`] = `
+"colossus mcp list
 
 list MCP servers and their status
 
@@ -437,8 +437,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo mcp add --help 1`] = `
-"kilo mcp add [name]
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus mcp add --help 1`] = `
+"colossus mcp add [name]
 
 add an MCP server
 
@@ -457,13 +457,13 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo mcp auth --help 1`] = `
-"kilo mcp auth [name]
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus mcp auth --help 1`] = `
+"colossus mcp auth [name]
 
 authenticate with an OAuth-enabled MCP server
 
 Commands:
-  kilo mcp auth list  list OAuth-capable MCP servers and their auth status         [aliases: ls]
+  colossus mcp auth list  list OAuth-capable MCP servers and their auth status     [aliases: ls]
 
 Positionals:
   name  name of the MCP server                                                              [string]
@@ -477,8 +477,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo mcp logout --help 1`] = `
-"kilo mcp logout [name]
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus mcp logout --help 1`] = `
+"colossus mcp logout [name]
 
 remove OAuth credentials for an MCP server
 
@@ -494,8 +494,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo providers list --help 1`] = `
-"kilo providers list
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus providers list --help 1`] = `
+"colossus providers list
 
 list providers and credentials
 
@@ -508,8 +508,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo providers login --help 1`] = `
-"kilo providers login [url]
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus providers login --help 1`] = `
+"colossus providers login [url]
 
 log in to a provider
 
@@ -527,8 +527,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo providers logout --help 1`] = `
-"kilo providers logout [provider]
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus providers logout --help 1`] = `
+"colossus providers logout [provider]
 
 log out from a configured provider
 
@@ -544,8 +544,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo agent create --help 1`] = `
-"kilo agent create
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus agent create --help 1`] = `
+"colossus agent create
 
 create a new agent
 
@@ -565,8 +565,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo agent list --help 1`] = `
-"kilo agent list
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus agent list --help 1`] = `
+"colossus agent list
 
 list all available agents
 
@@ -579,8 +579,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo session list --help 1`] = `
-"kilo session list
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus session list --help 1`] = `
+"colossus session list
 
 list sessions
 
@@ -597,8 +597,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo session delete --help 1`] = `
-"kilo session delete <sessionID>
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus session delete --help 1`] = `
+"colossus session delete <sessionID>
 
 delete a session
 
@@ -614,8 +614,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo github install --help 1`] = `
-"kilo github install
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus github install --help 1`] = `
+"colossus github install
 
 install the GitHub agent
 
@@ -628,8 +628,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo github run --help 1`] = `
-"kilo github run
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus github run --help 1`] = `
+"colossus github run
 
 run the GitHub agent
 
@@ -644,8 +644,8 @@ Options:
 "
 `;
 
-exports[`Kilo CLI help-text snapshots every documented command emits stable help text: kilo db path --help 1`] = `
-"kilo db path
+exports[`Colossus CLI help-text snapshots every documented command emits stable help text: colossus db path --help 1`] = `
+"colossus db path
 
 print the database path
 

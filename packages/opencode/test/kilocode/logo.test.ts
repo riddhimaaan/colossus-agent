@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import { plain, session, supports, tui } from "../../src/kilocode/cli/logo"
 
-describe("kilocode logo", () => {
+describe("colossus logo", () => {
   test("allows remote terminals", () => {
     expect(supports({ SSH_TTY: "/dev/pts/0" }, "linux")).toBe(true)
     expect(supports({ SSH_CLIENT: "127.0.0.1 12345 22" }, "linux")).toBe(true)
@@ -26,10 +26,24 @@ describe("kilocode logo", () => {
     expect(supports({ KILO_UNICODE_LOGO: "0" }, "linux")).toBe(false)
   })
 
-  test("uses modern and fallback logo variants", () => {
-    expect(tui({ KILO_UNICODE_LOGO: "1" }, "linux").join("\n")).toContain("🬺🬏")
-    expect(tui({}, "win32").join("\n")).not.toContain("🬺🬏")
-    expect(plain({}, "win32").join("\n")).not.toContain("🬁🬬")
+  // kilocode_change - the Colossus wordmark uses only CP437-safe glyphs, so no
+  // reduced variant is needed: every terminal gets the same art.
+  test("uses glyphs every terminal can render", () => {
+    for (const variant of [tui({ KILO_UNICODE_LOGO: "1" }, "linux"), tui({}, "win32"), plain({}, "win32")]) {
+      const text = variant.join("\n")
+      expect(text).not.toContain("🬺🬏")
+      expect(text).not.toContain("🬁🬬")
+      expect(/^[█~ ]+$/.test(text.replace(/\n/g, ""))).toBe(true)
+    }
+  })
+
+  test("renders the Colossus wordmark with a shadow row in the TUI variant", () => {
+    const modern = tui({ KILO_UNICODE_LOGO: "1" }, "linux")
+    expect(modern).toHaveLength(6)
+    expect(modern.at(-1)).toContain("~")
+    // plain drops the shadow, so nothing prints a stray tilde outside the TUI
+    expect(plain({}, "win32")).toHaveLength(5)
+    expect(plain({}, "win32").join("")).not.toContain("~")
   })
 
   test("formats child session exit logo", () => {

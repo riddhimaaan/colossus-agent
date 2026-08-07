@@ -46,7 +46,7 @@ describe("remote config authentication errors", () => {
       remote: "team config",
     })
 
-    expect(error).toContain("kilo auth login https://example.com/config.json")
+    expect(error).toContain("colossus auth login https://example.com/config.json")
     expect(error).not.toContain("opencode auth login")
   })
 })

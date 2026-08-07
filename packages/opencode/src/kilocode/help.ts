@@ -19,7 +19,7 @@ function extractCommandName(cmd: Cmd): string | undefined {
 
 async function getHelpText(name: string, cmd: Cmd): Promise<string> {
   const inst = yargs([])
-    .scriptName(name ? `kilo ${name}` : "kilo")
+    .scriptName(name ? `colossus ${name}` : "colossus")
     .wrap(null)
   if (cmd.builder) {
     if (typeof cmd.builder === "function") {
@@ -43,7 +43,7 @@ async function getSubcommands(
   if (!builder || typeof builder !== "function") return []
   if (depth > 4) return [] // guard against infinite recursion
 
-  const inst = yargs([]).scriptName(`kilo ${name}`).wrap(null)
+  const inst = yargs([]).scriptName(`colossus ${name}`).wrap(null)
   builder(inst)
 
   const result: Array<{ name: string; hidden: boolean; help: string }> = []
@@ -60,7 +60,7 @@ async function getSubcommands(
       if (sub === "$0") continue
 
       const full = `${name} ${sub}`
-      const subInst = yargs([]).scriptName(`kilo ${full}`).wrap(null)
+      const subInst = yargs([]).scriptName(`colossus ${full}`).wrap(null)
 
       if (handler.builder && typeof handler.builder === "function") {
         handler.builder(subInst)

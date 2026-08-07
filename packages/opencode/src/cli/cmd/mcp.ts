@@ -121,7 +121,7 @@ export const McpListCommand = effectCmd({
 
     if (servers.length === 0) {
       prompts.log.warn("No MCP servers configured")
-      prompts.outro("Add servers with: kilo mcp add") // kilocode_change
+      prompts.outro("Add servers with: colossus mcp add") // kilocode_change
       return
     }
 
