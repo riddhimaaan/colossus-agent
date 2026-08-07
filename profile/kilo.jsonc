@@ -1,0 +1,34 @@
+{
+  // Starter Colossus profile. The launcher copies this to
+  // ~/.config/colossus/kilo.jsonc on first run and never overwrites it
+  // afterwards, so your edits here are safe.
+  "$schema": "https://app.kilo.ai/config.json",
+  "default_agent": "agent",
+
+  // Any OpenRouter model works. "small_model" is used for cheap background
+  // work such as titling a session.
+  "model": "openrouter/deepseek/deepseek-v4-flash",
+  "small_model": "openrouter/deepseek/deepseek-v4-flash",
+
+  // Colossus asks before doing anything except reading and searching local
+  // files and loading skills. The coding-specific tools are switched off
+  // outright: this build has no coding personas to drive them.
+  "permission": {
+    "*": "ask",
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow",
+    "skill": "allow",
+    "lsp": "deny",
+    "codebase_search": "deny",
+    "semantic_search": "deny",
+    "repo_clone": "deny",
+    "repo_overview": "deny",
+    "plan_enter": "deny",
+    "plan_exit": "deny"
+  }
+
+  // MCP servers go here. See the README for an example.
+  // "mcp": { "my-server": { "type": "local", "command": ["npx", "-y", "some-mcp-server"] } }
+}

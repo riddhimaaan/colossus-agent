@@ -16,6 +16,13 @@ legacy_key_file="$host_home/.config/creative-cli/openrouter-api-key"
 # skills without the user having to make the folders by hand.
 mkdir -p "$config_dir"/{skills,command,agent}
 
+# Seed the starter profile so a fresh clone launches with a model and a
+# permission baseline already set. Only ever fills in a missing file, so an
+# edited profile survives every later launch and every `git pull`.
+for seed in kilo.jsonc AGENTS.md; do
+  [[ -e "$config_dir/$seed" ]] || cp "$root/profile/$seed" "$config_dir/$seed"
+done
+
 # A user-created, owner-only key file is the source of truth. Prefer it over
 # inherited terminal variables: old shell tabs can otherwise retain a revoked
 # key and cause intermittent-looking OpenRouter 401 errors.
