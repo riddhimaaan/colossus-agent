@@ -81,7 +81,11 @@ try {
   # Permit skills and MCP/config files in the user's active workspace. The source
   # checkout itself carries Kilo's bundled coding material, so keep project config
   # disabled only when Colossus is launched from inside that checkout.
-  if ($launchDirectory -eq $root -or $launchDirectory.StartsWith($root + [IO.Path]::DirectorySeparatorChar)) {
+  # OrdinalIgnoreCase because Windows paths are case-insensitive but
+  # String.StartsWith is not: `cd c:\users\...` would otherwise miss the checkout
+  # and let Kilo's bundled coding skills load, which is what this disables.
+  $insideCheckout = $launchDirectory.StartsWith($root + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)
+  if ($launchDirectory -eq $root -or $insideCheckout) {
     $env:KILO_DISABLE_PROJECT_CONFIG = '1'
   } else {
     Remove-Item Env:\KILO_DISABLE_PROJECT_CONFIG -ErrorAction SilentlyContinue
@@ -135,7 +139,14 @@ try {
   # a newer ~/.bun/bin/bun.exe, and the resulting version skew shows up much later as
   # confusing lockfile or runtime errors. Note the fallback path uses $hostHome: HOME
   # points into .runtime by now, for isolation.
+  # Read the pin from package.json, the way install.ps1 does. Hardcoding it here
+  # meant the warning kept quoting an old number after the repository moved on.
   $requiredBun = [version] '1.3.14'
+  try {
+    $pinned = (Get-Content -Raw -LiteralPath (Join-Path $root 'package.json') | ConvertFrom-Json).packageManager
+    if ($pinned -match 'bun@([0-9]+\.[0-9]+\.[0-9]+)') { $requiredBun = [version] $Matches[1] }
+  } catch { }
+
   $bunCandidates = @()
   $bunCandidates += (Get-Command bun -All -ErrorAction SilentlyContinue | ForEach-Object { $_.Source })
   $bunCandidates += (Join-Path $hostHome '.bun\bin\bun.exe')

@@ -195,12 +195,19 @@ if ($newKey) {
 
   # The Unix instructions chmod 600 this file. This is the Windows equivalent: drop
   # inherited permissions and grant the current user alone read/write.
-  try {
-    & icacls $keyFile /inheritance:r /grant:r "$($env:USERNAME):(R,W)" | Out-Null
-  } catch {
-    Write-Note 'Could not tighten permissions on the key file; it is readable by your account only by default.'
+  # A native command signals failure through its exit code; it does not raise a
+  # PowerShell error, so try/catch alone never fires and a failure here would be
+  # silent. Qualify the account with the domain so this also resolves on a
+  # domain-joined or Entra-joined machine, where a bare username may not.
+  $account = if ($env:USERDOMAIN) { "$env:USERDOMAIN\$env:USERNAME" } else { $env:USERNAME }
+  & icacls $keyFile /inheritance:r /grant:r "${account}:(R,W)" 2>&1 | Out-Null
+  if ($LASTEXITCODE -eq 0) {
+    Write-Ok "API key saved to $keyFile (readable by $account only)"
+  } else {
+    Write-Note "API key saved to $keyFile, but permissions could not be tightened."
+    Write-Note "It still inherits the defaults on your profile folder. To restrict it by hand:"
+    Write-Note "  icacls `"$keyFile`" /inheritance:r /grant:r `"${account}:(R,W)`""
   }
-  Write-Ok "API key saved to $keyFile"
 }
 
 # ---------------------------------------------------------------------------
@@ -226,7 +233,10 @@ if ($SkipProfile) {
   if ($content -match [regex]::Escape($beginMarker)) {
     # Replace the managed block, so re-running after moving the checkout repoints it.
     $pattern = [regex]::Escape($beginMarker) + '.*?' + [regex]::Escape($endMarker)
-    $content = [regex]::Replace($content, $pattern, $block.Replace('$', '$$$$'), 'Singleline')
+    # A literal $ in the replacement must be written '$$'; '$$$$' emits two.
+    # Only bites when the checkout path contains a $, which doubles it and
+    # produces a colossus command pointing at a directory that does not exist.
+    $content = [regex]::Replace($content, $pattern, $block.Replace('$', '$$'), 'Singleline')
   } else {
     # Drop any hand-written definition first, including the broken $PWD-derived one
     # older README instructions produced, so the shell cannot pick the stale one.
