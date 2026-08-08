@@ -18,8 +18,6 @@ account, no telemetry added by this fork, and no hosted service.
 
 ## Setup
 
-Three steps on every platform: install Bun, clone and install, add an API key.
-
 ### Requirements
 
 | | |
@@ -29,27 +27,68 @@ Three steps on every platform: install Bun, clone and install, add an API key.
 | **An OpenRouter API key** | or any other provider Kilo supports |
 | **Disk space** | about **2 GB** — see [Why the install is large](#why-the-install-is-large) |
 
-### 1. Install Bun
+### Windows
 
-**macOS / Linux**
+`install.ps1` does the whole setup in one pass: finds a new enough Bun, installs the
+dependencies, seeds your config, stores the API key, registers a `colossus` command, and
+verifies the result.
+
+```powershell
+git clone https://github.com/riddhimaaan/colossus-agent.git
+cd colossus-agent
+.\install.ps1
+```
+
+It prompts for a key from [openrouter.ai/keys](https://openrouter.ai/keys), with the input
+hidden. When it finishes, open a new PowerShell window, `cd` to the folder you want to work
+in, and run `colossus`.
+
+The installer is safe to re-run. It keeps an existing key, and rewrites its own marked block
+in your PowerShell profile rather than appending a second copy.
+
+<details>
+<summary>Installer options</summary>
+
+| Flag | Effect |
+|---|---|
+| `-ApiKey <key>` | Supply the key without the prompt. It lands in your shell history, so prefer the prompt. |
+| `-InstallBun` | Install Bun from bun.sh automatically when it is missing or too old |
+| `-SkipInstall` | Skip `bun install` — for re-registering the command or changing only the key |
+| `-SkipProfile` | Leave the PowerShell profile untouched |
+
+</details>
+
+**If PowerShell refuses to run the script**, your execution policy is blocking local
+scripts. Either allow them:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+or run the installer once without changing anything permanently:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+**If you downloaded a ZIP instead of cloning**, Windows tags the files as web content and
+blocks them even under `RemoteSigned`. Clear the tag first:
+
+```powershell
+Get-ChildItem -Recurse *.ps1 | Unblock-File
+```
+
+### macOS / Linux
+
+**1. Install Bun**
 
 ```bash
 curl -fsSL https://bun.sh/install | bash
 ```
 
-**Windows (PowerShell)**
+Close and reopen the terminal, then check it worked with `bun --version`.
 
-```powershell
-powershell -c "irm bun.sh/install.ps1 | iex"
-```
-
-Close and reopen the terminal, then check it worked:
-
-```bash
-bun --version
-```
-
-### 2. Clone and install
+**2. Clone and install**
 
 ```bash
 git clone https://github.com/riddhimaaan/colossus-agent.git
@@ -59,12 +98,10 @@ bun install
 
 `bun install` downloads the dependencies. It takes several minutes the first time.
 
-### 3. Add your API key
+**3. Add your API key**
 
 Get a key from [openrouter.ai/keys](https://openrouter.ai/keys), then save it where
-Colossus looks for it.
-
-**macOS / Linux**
+Colossus looks for it:
 
 ```bash
 mkdir -p ~/.config/colossus
@@ -72,18 +109,9 @@ printf '%s' 'YOUR-KEY-HERE' > ~/.config/colossus/openrouter-api-key
 chmod 600 ~/.config/colossus/openrouter-api-key
 ```
 
-**Windows (PowerShell)**
-
-```powershell
-New-Item -ItemType Directory -Force "$env:USERPROFILE\.config\colossus"
-Set-Content -NoNewline "$env:USERPROFILE\.config\colossus\openrouter-api-key" 'YOUR-KEY-HERE'
-```
-
 The key file stays outside this repository. Nothing in the setup ever commits it.
 
-### 4. Put `colossus` on your PATH
-
-**macOS / Linux**
+**4. Put `colossus` on your PATH**
 
 ```bash
 mkdir -p ~/.local/bin && ln -sf "$PWD/colossus" ~/.local/bin/colossus
@@ -92,15 +120,7 @@ mkdir -p ~/.local/bin && ln -sf "$PWD/colossus" ~/.local/bin/colossus
 If `colossus` is still not found afterwards, `~/.local/bin` is not on your PATH. Add it
 to your shell config (`~/.zshrc`, `~/.bashrc`, or `~/.config/fish/config.fish`).
 
-**Windows (PowerShell)** — add a function to your profile:
-
-```powershell
-Add-Content $PROFILE "`nfunction colossus { & '$PWD\colossus.ps1' @args }"
-```
-
-Then reopen PowerShell.
-
-### 5. Check it works
+**5. Check it works**
 
 ```bash
 colossus doctor
@@ -121,12 +141,16 @@ colossus
 | Platform | Status |
 |---|---|
 | **Linux** | Developed and tested here |
+| **Windows native** | Tested on Windows 11 (PowerShell 5.1, Bun 1.3.14). Use `install.ps1` |
 | **macOS** | Same launcher, same shell — expected to work, not yet verified by the maintainer |
-| **Windows via WSL2** | **Recommended for Windows.** Follow the Linux instructions inside WSL |
-| **Windows native** | `colossus.ps1` is provided but has **not been tested on a Windows machine** |
+| **Windows via WSL2** | Works; follow the Linux instructions inside WSL. Native is no longer the worse option |
 
-If you run Colossus on macOS or native Windows, please open an issue saying whether it
-worked. That is the fastest way to get those rows above changed to something firmer.
+On native Windows the whole TUI runs on prebuilt Windows binaries — `@opentui/core-win32-x64`
+for rendering and `@lydell/node-pty-win32-x64` (ConPTY) for the terminal — so nothing needs
+to compile at install time.
+
+If you run Colossus on macOS, please open an issue saying whether it worked. That is the
+fastest way to get that row changed to something firmer.
 
 ---
 
@@ -164,9 +188,10 @@ injected.
 
 ## Configuration
 
-Your settings live in `~/.config/colossus/`, outside this repository, so updating
-Colossus never touches them. The launcher creates the folder and seeds a starter
-`kilo.jsonc` and `AGENTS.md` on first run, and never overwrites either afterwards.
+Your settings live in `~/.config/colossus/` — on Windows,
+`%USERPROFILE%\.config\colossus\` — outside this repository, so updating Colossus never
+touches them. The launcher creates the folder and seeds a starter `kilo.jsonc` and
+`AGENTS.md` on first run, and never overwrites either afterwards.
 
 ```
 ~/.config/colossus/
@@ -239,15 +264,35 @@ and edit files without asking, so change it knowingly.
 
 ## Troubleshooting
 
-**`colossus: command not found`** — step 4 did not take. On macOS/Linux check that
-`~/.local/bin` is on your PATH.
+**`colossus: command not found`** — the PATH step did not take. On macOS/Linux check that
+`~/.local/bin` is on your PATH. On Windows re-run `.\install.ps1 -SkipInstall`, which
+rewrites the profile entry with an absolute path, then open a new terminal.
+
+**Windows: `The term 'colossus' is not recognized`, or it points somewhere wrong** — older
+setup instructions built the profile entry from `$PWD`, so running them from outside the
+checkout baked in a path that does not exist. `.\install.ps1` now derives the path from its
+own location and strips any stale hand-written definition. Check what you have with
+`Select-String colossus $PROFILE`.
 
 **`Colossus needs Bun, but it was not found`** — reopen your terminal after installing
 Bun, or point the launcher at it directly.
 
+**Windows: `Bun x.y.z is older than the 1.3.14 this repository pins`** — you have more than
+one Bun and an older one comes first on PATH, usually an npm-installed `bun` shim shadowing
+`~\.bun\bin\bun.exe`. The launcher picks the newest one it can find and warns; to silence it,
+`npm uninstall -g bun` or move `%USERPROFILE%\.bun\bin` ahead of `%APPDATA%\npm` in PATH.
+
 **`OpenRouter: rejected the configured API key`** — the key is wrong, revoked, or out of
 credit. An `OPENROUTER_API_KEY` already exported in your shell is ignored when the key
-file exists; the file wins.
+file exists; the file wins. On Windows, also suspect the file's bytes: `Set-Content` writes
+in the ANSI codepage and some hosts add a BOM, either of which corrupts the key. `install.ps1`
+writes it BOM-free; to fix one by hand use
+`[IO.File]::WriteAllText("$env:USERPROFILE\.config\colossus\openrouter-api-key", 'sk-or-...')`.
+
+**Windows: `doctor` cannot see a key you just wrote** — check where it actually landed.
+Before the fix in `colossus.ps1`, the launcher leaked its `HOME` and `USERPROFILE` remapping
+into the calling shell, so a later `"$env:USERPROFILE\.config\colossus\..."` in that same
+window resolved inside `.runtime` instead of your profile. Update, then use a new terminal.
 
 **The panel says `0 skills`** — that is correct on a fresh install. `~/.config/colossus/skills/`
 starts empty. Add a folder with a `SKILL.md` in it and restart.
