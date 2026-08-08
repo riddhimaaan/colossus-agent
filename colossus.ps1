@@ -178,7 +178,14 @@ try {
   # The runtime source lives in this fork, but an ordinary launch should operate on
   # the caller's folder. Passing it as the TUI project makes its local skills and
   # configuration discoverable.
-  $forward = if ($args.Count -eq 0) { @($launchDirectory) } else { $args }
+  #
+  # The @() around the whole expression is load-bearing. PowerShell unwraps a
+  # single-element array on assignment, so `$forward = if (...) { @($launchDirectory) }`
+  # leaves a bare string behind, and splatting a string with @forward enumerates its
+  # characters: `colossus` reached the CLI as 29 separate one-character arguments and
+  # every launch died in yargs with "Unknown arguments: :, \, U, s, e, r, s, ...".
+  # It broke every invocation that reached this line, `colossus --help` included.
+  $forward = @(if ($args.Count -eq 0) { $launchDirectory } else { $args })
 
   & $bunBin run --cwd (Join-Path $root 'packages\opencode') --conditions=node 'src/index.ts' @forward
   exit $LASTEXITCODE
