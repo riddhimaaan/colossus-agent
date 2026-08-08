@@ -23,7 +23,7 @@ Three steps on every platform: install Bun, clone and install, add an API key.
 | **Bun** | 1.3.14 or newer — this is the runtime, it is not optional |
 | **Git** | to clone |
 | **An OpenRouter API key** | or any other provider Kilo supports |
-| **Disk space** | about **3 GB** — see [Why it is large](#why-the-install-is-large) |
+| **Disk space** | about **2 GB** — see [Why the install is large](#why-the-install-is-large) |
 
 ### 1. Install Bun
 
@@ -244,10 +244,17 @@ starts empty. Add a folder with a `SKILL.md` in it and restart.
 
 ### Why the install is large
 
-Colossus is a fork of the whole Kilo monorepo, which also contains a VS Code extension, a
-JetBrains plugin, and a docs site. `bun install` pulls dependencies for all of it, so
-`node_modules` lands around 2.6 GB even though Colossus itself uses a fraction of that.
-Trimming this is an open item, not a solved one.
+A clean clone is about 70 MB and `bun install` brings `node_modules` to roughly 1.8 GB,
+measured on Linux.
+
+That is large for a terminal app, and it is what is left after trimming. Colossus began as
+a fork of the whole Kilo monorepo; the twelve packages it never imports — the VS Code
+extension, the JetBrains plugin, Kilo's docs site and web console, and eight smaller ones
+— have been removed, which took the tracked file count from 9,139 to 5,365 and the install
+from 2.6 GB to 1.8 GB.
+
+The remaining bulk is shared dependencies that the CLI genuinely pulls in, so getting much
+below this would mean replacing libraries rather than deleting packages.
 
 ---
 
