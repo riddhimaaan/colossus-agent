@@ -11,8 +11,9 @@ personas and the model-specific coding prompts taken out. What is left is the ru
 skills, slash commands, custom agents, MCP servers, and a permission system that asks
 before it acts. You point it at a folder and it works on the files there.
 
-It runs on your machine and talks to one provider you choose. There is no Colossus
-account, no telemetry added by this fork, and no hosted service.
+It runs on your machine and talks to one provider you choose. There is no Colossus account
+and no hosted service, and [telemetry is off by default](#telemetry) — unlike upstream Kilo,
+where it is on.
 
 ---
 
@@ -225,6 +226,26 @@ Check a model is available to your key before committing to it:
 ```bash
 colossus doctor model anthropic/claude-sonnet-4.5
 ```
+
+### Telemetry
+
+Off by default. The starter profile sets it:
+
+```jsonc
+"experimental": { "openTelemetry": false }
+```
+
+This is worth stating plainly because the default is inherited and it is the opposite way
+round. Upstream Kilo enables telemetry unless you opt out, and it fires on **every model
+response**, sending the provider and model, token counts, cost, response time, a persistent
+machine identifier, and your approximate location from your IP address. It does **not**
+send your prompts, your messages, or the contents of your files.
+
+Colossus flips the default. If your `~/.config/colossus/kilo.jsonc` predates this change,
+it will not have the setting — add the line yourself, or delete the file and let the
+launcher seed a fresh one.
+
+To send it after all, set the value to `true`.
 
 ### MCP servers
 

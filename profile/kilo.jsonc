@@ -10,6 +10,15 @@
   "model": "openrouter/deepseek/deepseek-v4-flash",
   "small_model": "openrouter/deepseek/deepseek-v4-flash",
 
+  // Upstream defaults this to true, which sends a record of every model
+  // response — model, token counts, cost, timing, a persistent machine ID and
+  // your approximate location — to Kilo's analytics service. Prompts and file
+  // contents are not included. Colossus turns it off: a local tool should not
+  // report on you by default. Set it to true if you want to send it.
+  "experimental": {
+    "openTelemetry": false
+  },
+
   // Colossus asks before doing anything except reading and searching local
   // files and loading skills. The coding-specific tools are switched off
   // outright: this build has no coding personas to drive them.
