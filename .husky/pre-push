@@ -18,11 +18,6 @@ if (process.versions.bun !== expectedBunVersion) {
 }
 '
 
-# kilocode_change start
-# Colossus does not ship the JetBrains plugin, so pushes are never gated on it.
-# Upstream decided this per-push by diffing against the remote, which fails open
-# on a first push to a fresh remote: there is no origin/main to diff against, so
-# it compares with the empty tree, concludes everything changed, and demands a
-# Gradle build. That needs a JDK nobody installs to work on this fork.
-bun typecheck --filter='!@kilocode/kilo-jetbrains'
-# kilocode_change end
+# kilocode_change - the JetBrains plugin was removed from this fork, so the
+# filter that used to exclude it from the typecheck is no longer needed.
+bun typecheck
