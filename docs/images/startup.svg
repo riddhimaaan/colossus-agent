@@ -1,0 +1,220 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="838" height="608" viewBox="0 0 838 608" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14">
+<rect width="838" height="608" rx="8" fill="#0e0e10"/>
+<rect x="16.0" y="16.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="34.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="52.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="70.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="88.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="106.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="124.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="142.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="160.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="178.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="196.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="214.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="232.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="250.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="268.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="286.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="304.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="322.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="340.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="358.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="376.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="394.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="412.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="430.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="448.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="466.0" width="100.8" height="18" fill="#0c0a09"/>
+<rect x="116.8" y="466.0" width="621.6" height="18" fill="#292524"/>
+<rect x="738.4" y="466.0" width="84.0" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="484.0" width="100.8" height="18" fill="#0c0a09"/>
+<rect x="116.8" y="484.0" width="621.6" height="18" fill="#292524"/>
+<rect x="738.4" y="484.0" width="84.0" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="502.0" width="100.8" height="18" fill="#0c0a09"/>
+<rect x="116.8" y="502.0" width="621.6" height="18" fill="#292524"/>
+<rect x="738.4" y="502.0" width="84.0" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="520.0" width="100.8" height="18" fill="#0c0a09"/>
+<rect x="116.8" y="520.0" width="621.6" height="18" fill="#292524"/>
+<rect x="738.4" y="520.0" width="84.0" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="538.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="556.0" width="806.4" height="18" fill="#0c0a09"/>
+<rect x="16.0" y="574.0" width="806.4" height="18" fill="#0c0a09"/>
+<text x="125.2 133.6 142.0 150.4 158.8 167.2" y="30.0" fill="#ffd9a0" xml:space="preserve">██████</text>
+<text x="175.6" y="30.0" fill="#d4762a" xml:space="preserve">╗</text>
+<text x="200.8 209.2 217.6 226.0 234.4 242.8" y="30.0" fill="#ffd9a0" xml:space="preserve">██████</text>
+<text x="251.2" y="30.0" fill="#d4762a" xml:space="preserve">╗</text>
+<text x="268.0 276.4" y="30.0" fill="#ffd9a0" xml:space="preserve">██</text>
+<text x="284.8" y="30.0" fill="#d4762a" xml:space="preserve">╗</text>
+<text x="352.0 360.4 368.8 377.2 385.6 394.0" y="30.0" fill="#ffd9a0" xml:space="preserve">██████</text>
+<text x="402.4" y="30.0" fill="#d4762a" xml:space="preserve">╗</text>
+<text x="419.2 427.6 436.0 444.4 452.8 461.2 469.6" y="30.0" fill="#ffd9a0" xml:space="preserve">███████</text>
+<text x="478.0" y="30.0" fill="#d4762a" xml:space="preserve">╗</text>
+<text x="494.8 503.2 511.6 520.0 528.4 536.8 545.2" y="30.0" fill="#ffd9a0" xml:space="preserve">███████</text>
+<text x="553.6" y="30.0" fill="#d4762a" xml:space="preserve">╗</text>
+<text x="570.4 578.8" y="30.0" fill="#ffd9a0" xml:space="preserve">██</text>
+<text x="587.2" y="30.0" fill="#d4762a" xml:space="preserve">╗</text>
+<text x="620.8 629.2" y="30.0" fill="#ffd9a0" xml:space="preserve">██</text>
+<text x="637.6" y="30.0" fill="#d4762a" xml:space="preserve">╗</text>
+<text x="646.0 654.4 662.8 671.2 679.6 688.0 696.4" y="30.0" fill="#ffd9a0" xml:space="preserve">███████</text>
+<text x="704.8" y="30.0" fill="#d4762a" xml:space="preserve">╗</text>
+<text x="116.8 125.2" y="48.0" fill="#f0a94b" xml:space="preserve">██</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6" y="48.0" fill="#a85320" xml:space="preserve">╔════╝</text>
+<text x="192.4 200.8" y="48.0" fill="#f0a94b" xml:space="preserve">██</text>
+<text x="209.2 217.6 226.0 234.4" y="48.0" fill="#a85320" xml:space="preserve">╔═══</text>
+<text x="242.8 251.2" y="48.0" fill="#f0a94b" xml:space="preserve">██</text>
+<text x="259.6" y="48.0" fill="#a85320" xml:space="preserve">╗</text>
+<text x="268.0 276.4" y="48.0" fill="#f0a94b" xml:space="preserve">██</text>
+<text x="284.8" y="48.0" fill="#a85320" xml:space="preserve">║</text>
+<text x="343.6 352.0" y="48.0" fill="#f0a94b" xml:space="preserve">██</text>
+<text x="360.4 368.8 377.2 385.6" y="48.0" fill="#a85320" xml:space="preserve">╔═══</text>
+<text x="394.0 402.4" y="48.0" fill="#f0a94b" xml:space="preserve">██</text>
+<text x="410.8" y="48.0" fill="#a85320" xml:space="preserve">╗</text>
+<text x="419.2 427.6" y="48.0" fill="#f0a94b" xml:space="preserve">██</text>
+<text x="436.0 444.4 452.8 461.2 469.6 478.0" y="48.0" fill="#a85320" xml:space="preserve">╔════╝</text>
+<text x="494.8 503.2" y="48.0" fill="#f0a94b" xml:space="preserve">██</text>
+<text x="511.6 520.0 528.4 536.8 545.2 553.6" y="48.0" fill="#a85320" xml:space="preserve">╔════╝</text>
+<text x="570.4 578.8" y="48.0" fill="#f0a94b" xml:space="preserve">██</text>
+<text x="587.2" y="48.0" fill="#a85320" xml:space="preserve">║</text>
+<text x="620.8 629.2" y="48.0" fill="#f0a94b" xml:space="preserve">██</text>
+<text x="637.6" y="48.0" fill="#a85320" xml:space="preserve">║</text>
+<text x="646.0 654.4" y="48.0" fill="#f0a94b" xml:space="preserve">██</text>
+<text x="662.8 671.2 679.6 688.0 696.4 704.8" y="48.0" fill="#a85320" xml:space="preserve">╔════╝</text>
+<text x="116.8 125.2" y="66.0" fill="#d4762a" xml:space="preserve">██</text>
+<text x="133.6" y="66.0" fill="#8a4218" xml:space="preserve">║</text>
+<text x="192.4 200.8" y="66.0" fill="#d4762a" xml:space="preserve">██</text>
+<text x="209.2" y="66.0" fill="#8a4218" xml:space="preserve">║</text>
+<text x="242.8 251.2" y="66.0" fill="#d4762a" xml:space="preserve">██</text>
+<text x="259.6" y="66.0" fill="#8a4218" xml:space="preserve">║</text>
+<text x="268.0 276.4" y="66.0" fill="#d4762a" xml:space="preserve">██</text>
+<text x="284.8" y="66.0" fill="#8a4218" xml:space="preserve">║</text>
+<text x="343.6 352.0" y="66.0" fill="#d4762a" xml:space="preserve">██</text>
+<text x="360.4" y="66.0" fill="#8a4218" xml:space="preserve">║</text>
+<text x="394.0 402.4" y="66.0" fill="#d4762a" xml:space="preserve">██</text>
+<text x="410.8" y="66.0" fill="#8a4218" xml:space="preserve">║</text>
+<text x="419.2 427.6 436.0 444.4 452.8 461.2 469.6" y="66.0" fill="#d4762a" xml:space="preserve">███████</text>
+<text x="478.0" y="66.0" fill="#8a4218" xml:space="preserve">╗</text>
+<text x="494.8 503.2 511.6 520.0 528.4 536.8 545.2" y="66.0" fill="#d4762a" xml:space="preserve">███████</text>
+<text x="553.6" y="66.0" fill="#8a4218" xml:space="preserve">╗</text>
+<text x="570.4 578.8" y="66.0" fill="#d4762a" xml:space="preserve">██</text>
+<text x="587.2" y="66.0" fill="#8a4218" xml:space="preserve">║</text>
+<text x="620.8 629.2" y="66.0" fill="#d4762a" xml:space="preserve">██</text>
+<text x="637.6" y="66.0" fill="#8a4218" xml:space="preserve">║</text>
+<text x="646.0 654.4 662.8 671.2 679.6 688.0 696.4" y="66.0" fill="#d4762a" xml:space="preserve">███████</text>
+<text x="704.8" y="66.0" fill="#8a4218" xml:space="preserve">╗</text>
+<text x="116.8 125.2" y="84.0" fill="#a85320" xml:space="preserve">██</text>
+<text x="133.6" y="84.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="192.4 200.8" y="84.0" fill="#a85320" xml:space="preserve">██</text>
+<text x="209.2" y="84.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="242.8 251.2" y="84.0" fill="#a85320" xml:space="preserve">██</text>
+<text x="259.6" y="84.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="268.0 276.4" y="84.0" fill="#a85320" xml:space="preserve">██</text>
+<text x="284.8" y="84.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="343.6 352.0" y="84.0" fill="#a85320" xml:space="preserve">██</text>
+<text x="360.4" y="84.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="394.0 402.4" y="84.0" fill="#a85320" xml:space="preserve">██</text>
+<text x="410.8 419.2 427.6 436.0 444.4 452.8" y="84.0" fill="#6b3312" xml:space="preserve">║╚════</text>
+<text x="461.2 469.6" y="84.0" fill="#a85320" xml:space="preserve">██</text>
+<text x="478.0" y="84.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="494.8 503.2 511.6 520.0 528.4" y="84.0" fill="#6b3312" xml:space="preserve">╚════</text>
+<text x="536.8 545.2" y="84.0" fill="#a85320" xml:space="preserve">██</text>
+<text x="553.6" y="84.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="570.4 578.8" y="84.0" fill="#a85320" xml:space="preserve">██</text>
+<text x="587.2" y="84.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="620.8 629.2" y="84.0" fill="#a85320" xml:space="preserve">██</text>
+<text x="637.6 646.0 654.4 662.8 671.2 679.6" y="84.0" fill="#6b3312" xml:space="preserve">║╚════</text>
+<text x="688.0 696.4" y="84.0" fill="#a85320" xml:space="preserve">██</text>
+<text x="704.8" y="84.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="116.8" y="102.0" fill="#6b3312" xml:space="preserve">╚</text>
+<text x="125.2 133.6 142.0 150.4 158.8 167.2" y="102.0" fill="#8a4218" xml:space="preserve">██████</text>
+<text x="175.6" y="102.0" fill="#6b3312" xml:space="preserve">╗</text>
+<text x="192.4" y="102.0" fill="#6b3312" xml:space="preserve">╚</text>
+<text x="200.8 209.2 217.6 226.0 234.4 242.8" y="102.0" fill="#8a4218" xml:space="preserve">██████</text>
+<text x="251.2 259.6" y="102.0" fill="#6b3312" xml:space="preserve">╔╝</text>
+<text x="268.0 276.4 284.8 293.2 301.6 310.0 318.4" y="102.0" fill="#8a4218" xml:space="preserve">███████</text>
+<text x="326.8" y="102.0" fill="#6b3312" xml:space="preserve">╗</text>
+<text x="343.6" y="102.0" fill="#6b3312" xml:space="preserve">╚</text>
+<text x="352.0 360.4 368.8 377.2 385.6 394.0" y="102.0" fill="#8a4218" xml:space="preserve">██████</text>
+<text x="402.4 410.8" y="102.0" fill="#6b3312" xml:space="preserve">╔╝</text>
+<text x="419.2 427.6 436.0 444.4 452.8 461.2 469.6" y="102.0" fill="#8a4218" xml:space="preserve">███████</text>
+<text x="478.0" y="102.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="494.8 503.2 511.6 520.0 528.4 536.8 545.2" y="102.0" fill="#8a4218" xml:space="preserve">███████</text>
+<text x="553.6" y="102.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="570.4" y="102.0" fill="#6b3312" xml:space="preserve">╚</text>
+<text x="578.8 587.2 595.6 604.0 612.4 620.8" y="102.0" fill="#8a4218" xml:space="preserve">██████</text>
+<text x="629.2 637.6" y="102.0" fill="#6b3312" xml:space="preserve">╔╝</text>
+<text x="646.0 654.4 662.8 671.2 679.6 688.0 696.4" y="102.0" fill="#8a4218" xml:space="preserve">███████</text>
+<text x="704.8" y="102.0" fill="#6b3312" xml:space="preserve">║</text>
+<text x="125.2 133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8 461.2 469.6 478.0 486.4 494.8 503.2 511.6 520.0 528.4 536.8 545.2 553.6 562.0 570.4 578.8 587.2 595.6 604.0 612.4 620.8 629.2 637.6 646.0 654.4 662.8 671.2 679.6 688.0 696.4 704.8 713.2" y="120.0" fill="#6b3312" xml:space="preserve">╚═════╝  ╚═════╝ ╚══════╝  ╚═════╝ ╚══════╝ ╚══════╝  ╚═════╝ ╚══════╝ </text>
+<text x="108.4 116.8 125.2 133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8 461.2 469.6 478.0 486.4 494.8 503.2 511.6 520.0 528.4 536.8 545.2 553.6 562.0 570.4 578.8 587.2 595.6 604.0 612.4 620.8 629.2 637.6 646.0 654.4 662.8 671.2 679.6 688.0 696.4 704.8 713.2 721.6 730.0" y="138.0" fill="#292524" xml:space="preserve">╭─Colossus local──────────────────────────────────────────────────────────╮</text>
+<text x="108.4" y="156.0" fill="#292524" xml:space="preserve">│</text>
+<text x="730.0" y="156.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="174.0" fill="#292524" xml:space="preserve">│</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6 184.0" y="174.0" fill="#f9f76f" font-weight="bold" xml:space="preserve">Session</text>
+<text x="730.0" y="174.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="192.0" fill="#292524" xml:space="preserve">│</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0" y="192.0" fill="#a6a09b" xml:space="preserve">model       </text>
+<text x="234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8 461.2 469.6 478.0" y="192.0" fill="#fafaf9" xml:space="preserve">DeepSeek V4 Flash · OpenRouter</text>
+<text x="730.0" y="192.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="210.0" fill="#292524" xml:space="preserve">│</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0" y="210.0" fill="#a6a09b" xml:space="preserve">folder      </text>
+<text x="234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8 461.2 469.6 478.0 486.4 494.8" y="210.0" fill="#fafaf9" xml:space="preserve">/home/nothingness/content-studio</text>
+<text x="730.0" y="210.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="228.0" fill="#292524" xml:space="preserve">│</text>
+<text x="730.0" y="228.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="246.0" fill="#292524" xml:space="preserve">│</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0 234.4 242.8 251.2 259.6" y="246.0" fill="#f9f76f" font-weight="bold" xml:space="preserve">Available Skills</text>
+<text x="730.0" y="246.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="264.0" fill="#292524" xml:space="preserve">│</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6" y="264.0" fill="#a6a09b" xml:space="preserve">global     </text>
+<text x="226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8 461.2 469.6 478.0 486.4 494.8 503.2 511.6 520.0 528.4 536.8 545.2 553.6 562.0 570.4 578.8 587.2 595.6 604.0 612.4 620.8 629.2 637.6 646.0 654.4 662.8 671.2" y="264.0" fill="#fafaf9" xml:space="preserve">caption-writer, hook-writer, newsletter-draft, script-</text>
+<text x="730.0" y="264.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="282.0" fill="#292524" xml:space="preserve">│</text>
+<text x="226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8 461.2 469.6 478.0 486.4 494.8 503.2 511.6 520.0" y="282.0" fill="#fafaf9" xml:space="preserve">outline, thumbnail-brief, tone-check</text>
+<text x="730.0" y="282.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="300.0" fill="#292524" xml:space="preserve">│</text>
+<text x="730.0" y="300.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="318.0" fill="#292524" xml:space="preserve">│</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0 234.4 242.8 251.2 259.6 268.0 276.4" y="318.0" fill="#f9f76f" font-weight="bold" xml:space="preserve">Available Commands</text>
+<text x="730.0" y="318.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="336.0" fill="#292524" xml:space="preserve">│</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2" y="336.0" fill="#a6a09b" xml:space="preserve">commands  </text>
+<text x="217.6 226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8 461.2 469.6 478.0 486.4 494.8 503.2 511.6 520.0 528.4 536.8 545.2 553.6 562.0 570.4 578.8 587.2 595.6 604.0 612.4 620.8 629.2 637.6 646.0 654.4 662.8 671.2 679.6 688.0 696.4 704.8 713.2" y="336.0" fill="#fafaf9" xml:space="preserve">init, local-review, local-review-uncommitted, resume-claude,</text>
+<text x="730.0" y="336.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="354.0" fill="#292524" xml:space="preserve">│</text>
+<text x="226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6" y="354.0" fill="#fafaf9" xml:space="preserve">resume-codex, review</text>
+<text x="730.0" y="354.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="372.0" fill="#292524" xml:space="preserve">│</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0" y="372.0" fill="#a6a09b" xml:space="preserve">agents      </text>
+<text x="234.4 242.8 251.2 259.6 268.0" y="372.0" fill="#fafaf9" xml:space="preserve">agent</text>
+<text x="730.0" y="372.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="390.0" fill="#292524" xml:space="preserve">│</text>
+<text x="730.0" y="390.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="408.0" fill="#292524" xml:space="preserve">│</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8 461.2 469.6 478.0 486.4 494.8 503.2 511.6 520.0 528.4 536.8 545.2 553.6 562.0 570.4 578.8 587.2 595.6 604.0 612.4" y="408.0" fill="#a6a09b" xml:space="preserve">6 skills · 6 commands · 0 MCP servers · /help for commands</text>
+<text x="730.0" y="408.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4" y="426.0" fill="#292524" xml:space="preserve">│</text>
+<text x="730.0" y="426.0" fill="#292524" xml:space="preserve">│</text>
+<text x="108.4 116.8 125.2 133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8 461.2 469.6 478.0 486.4 494.8 503.2 511.6 520.0 528.4 536.8 545.2 553.6 562.0 570.4 578.8 587.2 595.6 604.0 612.4 620.8 629.2 637.6 646.0 654.4 662.8 671.2 679.6 688.0 696.4 704.8 713.2 721.6 730.0" y="444.0" fill="#292524" xml:space="preserve">╰─────────────────────────────────────────────────────────────────────────╯</text>
+<text x="108.4" y="480.0" fill="#a6a09b" xml:space="preserve">┃</text>
+<text x="108.4" y="498.0" fill="#a6a09b" xml:space="preserve">┃</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8 461.2 469.6 478.0 486.4 494.8 503.2 511.6 520.0 528.4 536.8" y="498.0" fill="#a6a09b" xml:space="preserve">Ask anything... "Draft captions for these photos"</text>
+<text x="108.4" y="516.0" fill="#a6a09b" xml:space="preserve">┃</text>
+<text x="108.4" y="534.0" fill="#a6a09b" xml:space="preserve">┃</text>
+<text x="133.6 142.0 150.4 158.8 167.2 175.6" y="534.0" fill="#a6a09b" xml:space="preserve">Agent </text>
+<text x="192.4" y="534.0" fill="#a6a09b" xml:space="preserve">·</text>
+<text x="209.2 217.6 226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6" y="534.0" fill="#fafaf9" xml:space="preserve">DeepSeek V4 Flash</text>
+<text x="360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0" y="534.0" fill="#a6a09b" xml:space="preserve">OpenRouter</text>
+<text x="452.8" y="534.0" fill="#a6a09b" xml:space="preserve">·</text>
+<text x="469.6 478.0 486.4 494.8" y="534.0" fill="#cca700" font-weight="bold" xml:space="preserve">high</text>
+<text x="108.4" y="552.0" fill="#a6a09b" xml:space="preserve">╹</text>
+<text x="116.8 125.2 133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0 318.4 326.8 335.2 343.6 352.0 360.4 368.8 377.2 385.6 394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8 461.2 469.6 478.0 486.4 494.8 503.2 511.6 520.0 528.4 536.8 545.2 553.6 562.0 570.4 578.8 587.2 595.6 604.0 612.4 620.8 629.2 637.6 646.0 654.4 662.8 671.2 679.6 688.0 696.4 704.8 713.2 721.6 730.0" y="552.0" fill="#292524" xml:space="preserve">▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀</text>
+<text x="32.8 41.2 49.6 58.0 66.4 74.8 83.2 91.6 100.0 108.4 116.8 125.2 133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2" y="570.0" fill="#a6a09b" xml:space="preserve">/home/nothingness/content-studio</text>
+<text x="368.8 377.2 385.6 394.0 402.4 410.8 419.2" y="570.0" fill="#fafaf9" xml:space="preserve">ctrl+t </text>
+<text x="427.6 436.0 444.4 452.8 461.2 469.6 478.0 486.4" y="570.0" fill="#a6a09b" xml:space="preserve">variants</text>
+<text x="511.6 520.0 528.4 536.8" y="570.0" fill="#fafaf9" xml:space="preserve">tab </text>
+<text x="545.2 553.6 562.0 570.4 578.8 587.2" y="570.0" fill="#a6a09b" xml:space="preserve">agents</text>
+<text x="612.4 620.8 629.2 637.6 646.0 654.4 662.8" y="570.0" fill="#fafaf9" xml:space="preserve">ctrl+p </text>
+<text x="671.2 679.6 688.0 696.4 704.8 713.2 721.6 730.0" y="570.0" fill="#a6a09b" xml:space="preserve">commands</text>
+<text x="763.6 772.0 780.4 788.8 797.2" y="570.0" fill="#a6a09b" xml:space="preserve">local</text>
+</svg>

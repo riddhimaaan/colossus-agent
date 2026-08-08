@@ -15,9 +15,11 @@ import { useTuiConfig } from "../config"
 import { HomeSessionDestinationProvider } from "./home/session-destination"
 
 let once = false
+// kilocode_change - upstream suggested coding tasks here. Colossus has no
+// coding personas, so the hints now describe work it can actually do.
 const placeholder = {
-  normal: ["Fix a TODO in the codebase", "What is the tech stack of this project?", "Fix broken tests"],
-  shell: ["ls -la", "git status", "pwd"],
+  normal: ["Draft captions for these photos", "Turn this transcript into a script", "Tighten the opening paragraph"],
+  shell: ["ls -la", "wc -w draft.md", "pwd"],
 }
 
 export function Home() {

@@ -292,7 +292,8 @@ export function createPromptState(input: PromptInput): PromptState {
       return ""
     }
 
-    return new StyledText([fg(input.theme().muted)('Ask anything... "Fix a TODO in the codebase"')])
+    // kilocode_change - a coding hint here does not describe what this build does.
+    return new StyledText([fg(input.theme().muted)('Ask anything... "Draft captions for these photos"')])
   })
 
   let history = createPromptHistory(input.history)

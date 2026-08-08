@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="477" height="194" viewBox="0 0 477 194" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14">
+<rect width="477" height="194" rx="8" fill="#0e0e10"/>
+<text x="16.0" y="30.0" fill="#e6e6e6" xml:space="preserve">&gt;</text>
+<text x="32.8 41.2 49.6 58.0 66.4" y="30.0" fill="#e6e6e6" xml:space="preserve">agent</text>
+<text x="83.2" y="30.0" fill="#e6e6e6" xml:space="preserve">·</text>
+<text x="100.0 108.4 116.8 125.2 133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2 217.6 226.0 234.4 242.8 251.2 259.6 268.0 276.4 284.8 293.2 301.6 310.0" y="30.0" fill="#e6e6e6" xml:space="preserve">deepseek/deepseek-v4-flash</text>
+<text x="16.0" y="66.0" fill="#e6e6e6" xml:space="preserve">→</text>
+<text x="32.8 41.2 49.6 58.0 66.4" y="66.0" fill="#e6e6e6" xml:space="preserve">Skill</text>
+<text x="83.2 91.6 100.0 108.4 116.8 125.2 133.6 142.0 150.4 158.8 167.2 175.6 184.0 192.4 200.8 209.2" y="66.0" fill="#e6e6e6" xml:space="preserve">"caption-writer"</text>
+<text x="16.0 24.4" y="102.0" fill="#e6e6e6" xml:space="preserve">1.</text>
+<text x="41.2 49.6 58.0 66.4 74.8" y="102.0" fill="#e6e6e6" xml:space="preserve">Quiet</text>
+<text x="91.6 100.0 108.4 116.8 125.2" y="102.0" fill="#e6e6e6" xml:space="preserve">lake,</text>
+<text x="142.0 150.4 158.8 167.2 175.6 184.0" y="102.0" fill="#e6e6e6" xml:space="preserve">golden</text>
+<text x="200.8 209.2 217.6" y="102.0" fill="#e6e6e6" xml:space="preserve">sky</text>
+<text x="234.4" y="102.0" fill="#e6e6e6" xml:space="preserve">—</text>
+<text x="251.2 259.6 268.0 276.4 284.8 293.2 301.6" y="102.0" fill="#e6e6e6" xml:space="preserve">morning</text>
+<text x="318.4 326.8 335.2 343.6 352.0" y="102.0" fill="#e6e6e6" xml:space="preserve">worth</text>
+<text x="368.8 377.2 385.6 394.0 402.4 410.8" y="102.0" fill="#e6e6e6" xml:space="preserve">waking</text>
+<text x="427.6 436.0 444.4 452.8" y="102.0" fill="#e6e6e6" xml:space="preserve">for.</text>
+<text x="16.0 24.4" y="138.0" fill="#e6e6e6" xml:space="preserve">2.</text>
+<text x="41.2 49.6 58.0 66.4 74.8" y="138.0" fill="#e6e6e6" xml:space="preserve">Still</text>
+<text x="91.6 100.0 108.4 116.8 125.2" y="138.0" fill="#e6e6e6" xml:space="preserve">water</text>
+<text x="142.0 150.4 158.8 167.2 175.6" y="138.0" fill="#e6e6e6" xml:space="preserve">meets</text>
+<text x="192.4 200.8 209.2 217.6 226.0" y="138.0" fill="#e6e6e6" xml:space="preserve">first</text>
+<text x="242.8 251.2 259.6 268.0 276.4 284.8" y="138.0" fill="#e6e6e6" xml:space="preserve">light.</text>
+<text x="301.6 310.0 318.4 326.8 335.2" y="138.0" fill="#e6e6e6" xml:space="preserve">Peace</text>
+<text x="352.0 360.4 368.8 377.2 385.6 394.0" y="138.0" fill="#e6e6e6" xml:space="preserve">starts</text>
+<text x="410.8 419.2 427.6 436.0 444.4" y="138.0" fill="#e6e6e6" xml:space="preserve">here.</text>
+<text x="16.0 24.4" y="174.0" fill="#e6e6e6" xml:space="preserve">3.</text>
+<text x="41.2 49.6 58.0 66.4 74.8 83.2 91.6" y="174.0" fill="#e6e6e6" xml:space="preserve">Sunrise</text>
+<text x="108.4 116.8 125.2 133.6 142.0 150.4 158.8" y="174.0" fill="#e6e6e6" xml:space="preserve">painted</text>
+<text x="175.6 184.0 192.4" y="174.0" fill="#e6e6e6" xml:space="preserve">the</text>
+<text x="209.2 217.6 226.0 234.4" y="174.0" fill="#e6e6e6" xml:space="preserve">lake</text>
+<text x="251.2 259.6 268.0 276.4 284.8 293.2" y="174.0" fill="#e6e6e6" xml:space="preserve">before</text>
+<text x="310.0 318.4 326.8" y="174.0" fill="#e6e6e6" xml:space="preserve">the</text>
+<text x="343.6 352.0 360.4 368.8 377.2" y="174.0" fill="#e6e6e6" xml:space="preserve">world</text>
+<text x="394.0 402.4 410.8 419.2 427.6 436.0 444.4 452.8" y="174.0" fill="#e6e6e6" xml:space="preserve">stirred.</text>
+</svg>

@@ -2,6 +2,10 @@
 
 A local terminal agent for creative work — writing, captions, scripts, research, drafting.
 
+<p align="center">
+  <img src="docs/images/startup.svg" alt="The Colossus startup screen: a bronze ANSI Shadow wordmark above a panel listing the model, working folder, available skills and commands." width="820">
+</p>
+
 Colossus is a fork of [Kilo Code](https://github.com/Kilo-Org/kilocode) with the coding
 personas and the model-specific coding prompts taken out. What is left is the runtime:
 skills, slash commands, custom agents, MCP servers, and a permission system that asks
@@ -131,6 +135,12 @@ worked. That is the fastest way to get those rows above changed to something fir
 Start Colossus in a folder and type what you want. It reads and searches that folder
 freely; anything else — writing a file, running a command, reaching the network — it
 asks about first.
+
+When a skill matches the request, it loads that skill and says so:
+
+<p align="center">
+  <img src="docs/images/session.svg" alt="A one-shot run: Colossus loads the caption-writer skill and returns three numbered captions." width="640">
+</p>
 
 Useful commands:
 
@@ -276,6 +286,20 @@ provider APIs. Everything else passes.
 
 The inherited Kilo CI workflows are parked in `.github/workflows/disabled/`. They target
 Kilo's own infrastructure and secrets and will not work here.
+
+### Regenerating the screenshots
+
+The images in this README are not mockups. They are real terminal output, captured through
+a pty and replayed into SVG by `script/ansi2svg.ts`:
+
+```bash
+COLORTERM=truecolor script -qec "stty cols 96 rows 32; ./colossus" /dev/null > frame.ansi
+bun script/ansi2svg.ts frame.ansi docs/images/startup.svg 96 32
+```
+
+Pass `--no-alt` for ordinary command output, which does not use the alternate screen. The
+skills shown in the startup image come from a throwaway profile made for the picture; a
+real install starts with none.
 
 ---
 
