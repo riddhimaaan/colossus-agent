@@ -81,6 +81,20 @@ Get-ChildItem -Recurse *.ps1 | Unblock-File
 
 ### macOS / Linux
 
+Open Terminal. On a Mac that is Applications → Utilities → Terminal, or Command-Space
+and type `terminal`. Every block below is meant to be pasted in as-is.
+
+**0. macOS only: install Apple's command line tools**
+
+A new Mac has no `git` until these are installed. Skip on Linux.
+
+```bash
+xcode-select --install
+```
+
+A dialog appears; click Install and wait for it to finish. If it says the tools are
+already installed, that is the answer you want — carry on.
+
 **1. Install Bun**
 
 ```bash
@@ -114,12 +128,36 @@ The key file stays outside this repository. Nothing in the setup ever commits it
 
 **4. Put `colossus` on your PATH**
 
+This makes the `colossus` command work from any folder. Run it from inside the
+`colossus-agent` folder you cloned in step 2.
+
 ```bash
 mkdir -p ~/.local/bin && ln -sf "$PWD/colossus" ~/.local/bin/colossus
 ```
 
-If `colossus` is still not found afterwards, `~/.local/bin` is not on your PATH. Add it
-to your shell config (`~/.zshrc`, `~/.bashrc`, or `~/.config/fish/config.fish`).
+macOS does not put `~/.local/bin` on the PATH by default, so the command still needs
+registering with your shell. This adds it once and does nothing on a re-run:
+
+```bash
+case "${SHELL##*/}" in
+  zsh)  rc="$HOME/.zshrc" ;;   # the default on macOS
+  bash) rc="$HOME/.bashrc" ;;  # the default on most Linux
+  *)    rc="$HOME/.profile" ;;
+esac
+grep -qs '\.local/bin' "$rc" || echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$rc"
+. "$rc"
+```
+
+Confirm the shell can find it:
+
+```bash
+command -v colossus
+```
+
+That should print a path ending in `.local/bin/colossus`. If it prints nothing, close
+the terminal, open a new one, and try again.
+
+Using fish? Run `fish_add_path ~/.local/bin` instead of the block above.
 
 **5. Check it works**
 
@@ -143,15 +181,16 @@ colossus
 |---|---|
 | **Linux** | Developed and tested here |
 | **Windows native** | Tested on Windows 11 (PowerShell 5.1, Bun 1.3.14). Use `install.ps1` |
-| **macOS** | Same launcher, same shell — expected to work, not yet verified by the maintainer |
+| **macOS** | Verified in CI on Apple Silicon (macOS 26) and Intel (macOS 15), Bun 1.3.14 — see [`macos-install.yml`](.github/workflows/macos-install.yml) |
 | **Windows via WSL2** | Works; follow the Linux instructions inside WSL. Native is no longer the worse option |
 
 On native Windows the whole TUI runs on prebuilt Windows binaries — `@opentui/core-win32-x64`
 for rendering and `@lydell/node-pty-win32-x64` (ConPTY) for the terminal — so nothing needs
 to compile at install time.
 
-If you run Colossus on macOS, please open an issue saying whether it worked. That is the
-fastest way to get that row changed to something firmer.
+The macOS setup above is re-run against real Apple hardware on every change to the
+launcher or the installer, on both Apple Silicon and Intel. If it still fails on your
+Mac, please open an issue with your macOS version and the output of `command -v colossus`.
 
 ---
 

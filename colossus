@@ -2,7 +2,18 @@
 set -euo pipefail
 
 # Resolve the real file first: `colossus` is a symlink in ~/.local/bin.
-root="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+# `readlink -f` is GNU, and BSD readlink only gained -f in macOS 12.3, so walk
+# the symlink chain by hand instead. Keeps older macOS working.
+source_path="${BASH_SOURCE[0]}"
+while [ -L "$source_path" ]; do
+  link_target="$(readlink "$source_path")"
+  case "$link_target" in
+    /*) source_path="$link_target" ;;
+    # A relative link resolves against the directory holding the link itself.
+    *) source_path="$(cd "$(dirname "$source_path")" && pwd)/$link_target" ;;
+  esac
+done
+root="$(cd "$(dirname "$source_path")" && pwd)"
 runtime="$root/.runtime"
 launch_directory="$PWD"
 host_home="$HOME"

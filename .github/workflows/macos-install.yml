@@ -79,16 +79,25 @@ jobs:
             echo "no OPENROUTER_API_KEY secret set - doctor will be skipped"
           fi
 
-      # README step 4 - put the launcher on PATH.
-      - name: Symlink onto PATH (README step 4)
+      # README step 4 - symlink, then register the directory with the shell using
+      # the README's own block. Nothing is injected into GITHUB_PATH here, so the
+      # next step is a genuine test of whether the documented steps are sufficient.
+      - name: Symlink and register on PATH (README step 4)
         run: |
           mkdir -p ~/.local/bin && ln -sf "$PWD/colossus" ~/.local/bin/colossus
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          rc="$HOME/.zshrc" # zsh is the macOS default shell
+          grep -qs '\.local/bin' "$rc" || echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$rc"
+          cat "$rc"
 
-      - name: Resolve colossus on PATH
+      # The real check: a brand new zsh session, exactly what a user gets when they
+      # open a fresh Terminal window. If the README is incomplete, this fails.
+      - name: A fresh zsh finds colossus
         run: |
-          command -v colossus
-          ls -l "$(command -v colossus)"
+          zsh -i -c 'command -v colossus'
+          zsh -i -c 'ls -l "$(command -v colossus)"'
+
+      - name: Make colossus available to the remaining steps
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       # First real execution of the launcher script. This is where a macOS-only
       # portability problem surfaces, because line 5 runs before anything else.
