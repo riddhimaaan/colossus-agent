@@ -1,0 +1,127 @@
+name: macOS install test
+
+# Verifies the documented macOS setup from README.md on real Apple hardware.
+# Runs on demand, and on any change to the installer, launcher, or this file.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "colossus"
+      - "install"
+      - "package.json"
+      - ".github/workflows/macos-install.yml"
+
+jobs:
+  install:
+    name: ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false # One chip failing must not hide the other's result.
+      matrix:
+        include:
+          - os: macos-latest
+            label: Apple Silicon
+          - os: macos-15-intel
+            label: Intel
+
+    steps:
+      # Proof of hardware before anything else. sw_vers, sysctl and csrutil are
+      # Apple binaries that do not exist on Linux or Windows, so a passing run
+      # here cannot be a mislabelled Linux box.
+      - name: Prove this is a real Mac
+        run: |
+          echo "::group::Hardware proof"
+          echo "uname -s          : $(uname -s)"
+          echo "uname -m          : $(uname -m)"
+          echo "macOS version     : $(sw_vers -productVersion)"
+          echo "build             : $(sw_vers -buildVersion)"
+          echo "CPU               : $(sysctl -n machdep.cpu.brand_string)"
+          echo "model             : $(sysctl -n hw.model)"
+          echo "cores             : $(sysctl -n hw.ncpu)"
+          echo "SIP               : $(csrutil status 2>/dev/null || echo 'n/a')"
+          echo "::endgroup::"
+
+          # Hard gate: fail loudly rather than silently testing the wrong OS.
+          test "$(uname -s)" = "Darwin" || { echo "NOT a Mac"; exit 1; }
+          echo "Confirmed: Darwin / macOS $(sw_vers -productVersion) on $(uname -m)"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # README step 1 - install Bun the way the docs tell a user to.
+      # Deliberately not using an action: the point is to test the documented path.
+      - name: Install Bun (README step 1)
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+
+      - name: Check bun --version
+        run: bun --version
+
+      # README step 2 - dependencies. The slow one; several minutes is normal.
+      - name: bun install (README step 2)
+        run: bun install
+
+      # README step 3 - the key. Uses a repo secret when one exists so that
+      # `colossus doctor` can be exercised; otherwise the run continues and the
+      # doctor step reports itself as skipped instead of failing the build.
+      - name: Write API key if available (README step 3)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          mkdir -p ~/.config/colossus
+          if [ -n "$OPENROUTER_API_KEY" ]; then
+            printf '%s' "$OPENROUTER_API_KEY" > ~/.config/colossus/openrouter-api-key
+            chmod 600 ~/.config/colossus/openrouter-api-key
+            echo "key installed"
+          else
+            echo "no OPENROUTER_API_KEY secret set - doctor will be skipped"
+          fi
+
+      # README step 4 - symlink, then register the directory with the shell using
+      # the README's own block. Nothing is injected into GITHUB_PATH here, so the
+      # next step is a genuine test of whether the documented steps are sufficient.
+      - name: Symlink and register on PATH (README step 4)
+        run: |
+          mkdir -p ~/.local/bin && ln -sf "$PWD/colossus" ~/.local/bin/colossus
+          rc="$HOME/.zshrc" # zsh is the macOS default shell
+          grep -qs '\.local/bin' "$rc" || echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$rc"
+          cat "$rc"
+
+      # The real check: a brand new zsh session, exactly what a user gets when they
+      # open a fresh Terminal window. If the README is incomplete, this fails.
+      - name: A fresh zsh finds colossus
+        run: |
+          zsh -i -c 'command -v colossus'
+          zsh -i -c 'ls -l "$(command -v colossus)"'
+
+      - name: Make colossus available to the remaining steps
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      # First real execution of the launcher script. This is where a macOS-only
+      # portability problem surfaces, because line 5 runs before anything else.
+      - name: Launcher runs (colossus prompt show)
+        run: |
+          colossus prompt show | head -5
+          echo "launcher executed without error"
+
+      # README step 5 - only meaningful with a key present.
+      - name: colossus doctor (README step 5)
+        run: |
+          if [ -s ~/.config/colossus/openrouter-api-key ]; then
+            colossus doctor
+          else
+            echo "skipped: no API key secret configured"
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### ${{ matrix.label }} - macOS $(sw_vers -productVersion)"
+            echo ""
+            echo "- arch: \`$(uname -m)\`"
+            echo "- cpu: \`$(sysctl -n machdep.cpu.brand_string)\`"
+            echo "- bun: \`$(bun --version 2>/dev/null || echo 'not installed')\`"
+          } >> "$GITHUB_STEP_SUMMARY"
