@@ -128,6 +128,21 @@ const withVariant = (
 const apiName = (model: ModelV2.Info) =>
   model.api.type === "aisdk" ? `${model.api.type}:${model.api.package}` : model.api.type
 
+// kilocode_change start - OpenRouter and the Kilo Gateway both expose the OpenAI
+// chat-completions dialect at their own base URL, so they resolve exactly like
+// any other OpenAI-compatible endpoint. Listing only "@ai-sdk/openai-compatible"
+// here left every model from those two providers unusable: the catalog offered
+// them, then each request failed with UnsupportedApiError.
+const OPENAI_COMPATIBLE_PACKAGES = new Set([
+  "@ai-sdk/openai-compatible",
+  "@openrouter/ai-sdk-provider",
+  "@kilocode/kilo-gateway",
+])
+
+const isOpenAICompatible = (model: ModelV2.Info) =>
+  model.api.type === "aisdk" && OPENAI_COMPATIBLE_PACKAGES.has(model.api.package) && model.api.url !== undefined
+// kilocode_change end
+
 export const fromCatalogModel = (
   model: ModelV2.Info,
   credential?: Credential.Value,
@@ -163,7 +178,7 @@ export const fromCatalogModel = (
         .model({ id: resolved.api.id }),
     )
   }
-  if (resolved.api.type === "aisdk" && resolved.api.package === "@ai-sdk/openai-compatible" && resolved.api.url) {
+  if (isOpenAICompatible(resolved)) {
     return Effect.succeed(
       withDefaults(resolved, OpenAICompatibleChat.route)
         .with({ auth: key === undefined ? Auth.none : Auth.bearer(key) })
@@ -184,9 +199,9 @@ export const resolve = (session: SessionSchema.Info, model: ModelV2.Info, creden
 
 export const supported = (model: ModelV2.Info) =>
   model.api.type === "aisdk" &&
-  (model.api.package === "@ai-sdk/openai" ||
-    model.api.package === "@ai-sdk/anthropic" ||
-    (model.api.package === "@ai-sdk/openai-compatible" && model.api.url !== undefined))
+  // kilocode_change - must stay in step with fromCatalogModel above, or the
+  // catalog and the runner disagree about what can actually be run.
+  (model.api.package === "@ai-sdk/openai" || model.api.package === "@ai-sdk/anthropic" || isOpenAICompatible(model))
 
 /** Resolves models from the catalog belonging to the current Location runtime. */
 export const locationLayer = Layer.effect(
