@@ -4,6 +4,7 @@ import { AISDK } from "./aisdk"
 import { Catalog } from "./catalog"
 import { CommandV2 } from "./command"
 import { Config } from "./config"
+import { EventV2 } from "./event" // kilocode_change
 import { LayerNode } from "./effect/layer-node"
 import { Node } from "./effect/app-node"
 import { FileMutation } from "./file-mutation"
@@ -41,6 +42,10 @@ export { LocationServiceMap } from "./location-service-map"
 
 export const locationServices = LayerNode.group([
   Location.node,
+  // kilocode_change - already built here transitively (Catalog, Integration and
+  // Watcher all depend on it). Naming it explicitly puts it in LocationServices,
+  // so code running in this context can publish events without an untyped cast.
+  EventV2.node,
   Policy.node,
   Config.node,
   AgentV2.node,

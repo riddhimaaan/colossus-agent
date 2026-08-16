@@ -446,6 +446,25 @@ export namespace RevertEvent {
   })
 }
 
+// kilocode_change start - A run can fail before any step begins: an unusable
+// model, a provider that cannot be resolved, a store that will not open. Those
+// failures had no event at all, so every client — TUI, SDK, desktop app — sat
+// waiting on a turn that was already dead.
+//
+// Deliberately live-only (no `durable` block). It reports that this attempt to
+// run failed, which is not a fact about the conversation, so it must stay out of
+// the replayable history: replaying a session should not re-raise a transient
+// provider outage. Step.Failed remains the durable, in-conversation failure.
+export const RunFailed = Event.define({
+  type: "session.next.run.failed",
+  schema: {
+    ...Base,
+    error: UnknownError,
+  },
+})
+export type RunFailed = typeof RunFailed.Type
+// kilocode_change end
+
 export const DurableDefinitions = Event.inventory(
   AgentSwitched,
   ModelSwitched,
@@ -481,6 +500,7 @@ export const Definitions = Event.inventory(
   AgentSwitched,
   ModelSwitched,
   Moved,
+  RunFailed, // kilocode_change - live-only, so it belongs here and not in DurableDefinitions
   Prompted,
   PromptAdmitted,
   ContextUpdated,

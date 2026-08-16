@@ -227,6 +227,12 @@ export function update(adapter: Adapter, event: SessionEvent.Event) {
           draft.error = event.data.error
         })
       },
+      // kilocode_change start - A run failing is not a fact about the
+      // conversation, so nothing is projected onto the message history. It exists
+      // to tell live clients to stop waiting; step.failed above is what records an
+      // actual failed turn. Handled explicitly because this match is exhaustive.
+      "session.next.run.failed": () => Effect.void,
+      // kilocode_change end
       "session.next.text.started": (event) => {
         return updateOwnedAssistant(event.data.assistantMessageID, (draft) => {
           draft.content.push(
