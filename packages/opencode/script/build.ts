@@ -54,6 +54,18 @@ async function copyTreeSitterWasms(outputDir: string) {
 async function buildKiloConsole() {
   const app = path.resolve(dir, "../kilo-console")
   const out = path.join(app, "dist")
+
+  // kilocode_change start - Colossus prunes the Kilo Console source but keeps its
+  // built output. Without this the whole build aborts here, so no binary can be
+  // produced at all. Reuse what was shipped rather than rebuilding from source
+  // that is not present.
+  if (!fs.existsSync(path.join(app, "package.json"))) {
+    if (!fs.existsSync(out)) throw new Error(`Kilo Console has neither source nor a prebuilt dist at ${out}`)
+    console.log("using prebuilt Kilo Console assets (source not present in this fork)")
+    return out
+  }
+  // kilocode_change end
+
   console.log("building Kilo Console")
   const proc = Bun.spawn([process.execPath, "run", "build"], {
     cwd: app,
